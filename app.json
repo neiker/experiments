@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "AnimationSandbox",
-    "slug": "AnimationSandbox",
+    "name": "Canvas",
+    "slug": "Canvas",
     "platforms": [
       "ios",
       "android",
