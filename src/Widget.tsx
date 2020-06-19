@@ -41,7 +41,7 @@ export const WidgetComponent: React.FC<{
 
   return (
     <Draggable x={x} y={y} width={width} height={height} onDragEnd={onDragEnd}>
-      <Selecteable width={width} height={height} onResize={onResizeEnd}>
+      <Selecteable width={width} height={height} onResizeEnd={onResizeEnd}>
         <Reanimated.View
           style={{
             padding: 10,

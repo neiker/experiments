@@ -20,17 +20,17 @@ import { usePanGestureHandler, diffClamp } from "react-native-redash";
 const ResizeHandler: React.FC<{
   width: Value<number>;
   height: Value<number>;
-  onResize: (size: { width: number; height: number }) => void;
-}> = ({ width, height, onResize }) => {
+  onResizeEnd: (size: { width: number; height: number }) => void;
+}> = ({ width, height, onResizeEnd }) => {
   const { gestureHandler, state, translation } = usePanGestureHandler();
   const originalWidth = new Value(0);
   const originalHeight = new Value(0);
 
   const onEnd = React.useCallback(
     (size) => {
-      onResize({ width: size[0], height: size[1] });
+      onResizeEnd({ width: size[0], height: size[1] });
     },
-    [onResize]
+    [onResizeEnd]
   );
 
   useCode(
@@ -84,8 +84,8 @@ const ResizeHandler: React.FC<{
 export const Selecteable: React.FC<{
   width: Value<number>;
   height: Value<number>;
-  onResize: (size: { width: number; height: number }) => void;
-}> = ({ children, width, height, onResize }) => {
+  onResizeEnd: (size: { width: number; height: number }) => void;
+}> = ({ children, width, height, onResizeEnd }) => {
   const [selected, setSelected] = React.useState(false);
 
   const toggle = React.useCallback(() => setSelected((c) => !c), []);
@@ -100,7 +100,7 @@ export const Selecteable: React.FC<{
       }}
     >
       <View>
-        {selected && <ResizeHandler {...{ width, height, onResize }} />}
+        {selected && <ResizeHandler {...{ width, height, onResizeEnd }} />}
         {children}
       </View>
     </TapGestureHandler>
