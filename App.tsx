@@ -1,100 +1,25 @@
 import React from "react";
-import { StyleSheet, Dimensions, View } from "react-native";
-import { PanGestureHandler, State } from "react-native-gesture-handler";
-import {
-  usePanGestureHandler,
-  withOffset,
-  diffClamp,
-  useValue,
-} from "react-native-redash";
-import Reanimated, { useCode } from "react-native-reanimated";
+import { StyleSheet, View } from "react-native";
 
-const { cond, eq, set } = Reanimated;
+import { Widget, WidgetComponent } from "./src/Widget";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fafafa",
   },
-  sticky: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-  },
 });
 
-const windowSize = Dimensions.get("window");
-
-const Widget: React.FC<Widget> = ({
-  x,
-  y,
-  width,
-  height,
-  properties: { color },
-}) => {
-  const opacity = useValue(1);
-  const offsetX = useValue(x);
-  const offsetY = useValue(y);
-
-  const { gestureHandler, state, translation } = usePanGestureHandler();
-
-  const translateX = diffClamp(
-    withOffset(translation.x, state, offsetX),
-    0,
-    windowSize.width - width
-  );
-
-  const translateY = diffClamp(
-    withOffset(translation.y, state, offsetY),
-    0,
-    windowSize.height - height
-  );
-
-  useCode(
-    () => [
-      cond(eq(state, State.ACTIVE), set(opacity, 0.6)),
-      cond(eq(state, State.END), set(opacity, 1)),
-    ],
-    []
-  );
-
-  return (
-    <PanGestureHandler {...gestureHandler}>
-      <Reanimated.View
-        style={[
-          styles.sticky,
-          {
-            width,
-            height,
-            backgroundColor: color,
-            opacity,
-            transform: [{ translateX }, { translateY }],
-          },
-        ]}
-      />
-    </PanGestureHandler>
-  );
-};
-
-interface Widget {
-  id: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  properties: {
-    color: string;
-  };
-}
-const widgets: Widget[] = [
+const defaultWidget: Widget[] = [
   {
     id: "1",
-    x: 45,
-    y: 121,
+    x: 50,
+    y: 50,
     width: 120,
     height: 120,
     properties: {
       color: "yellow",
+      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     },
   },
   {
@@ -105,6 +30,8 @@ const widgets: Widget[] = [
     height: 120,
     properties: {
       color: "green",
+      text:
+        "Suspendisse eu scelerisque magna, vitae vestibulum ex. Phasellus ut aliquet sapien. ",
     },
   },
   {
@@ -115,6 +42,7 @@ const widgets: Widget[] = [
     height: 120,
     properties: {
       color: "blue",
+      text: "Cras aliquam est eget ex pulvinar, vitae egestas lacus sagittis. ",
     },
   },
   {
@@ -125,18 +53,34 @@ const widgets: Widget[] = [
     height: 120,
     properties: {
       color: "red",
+      text:
+        "Cras facilisis justo ligula, at vulputate lorem ornare nec. Duis ac enim leo.",
     },
   },
 ];
 
 const App: React.FC = () => {
+  const [widgets, setWidgets] = React.useState<Widget[]>(defaultWidget);
+
   return (
     <View style={styles.container}>
       {widgets.map((widget) => (
-        <Widget key={widget.id} {...widget} />
+        <WidgetComponent
+          key={widget.id}
+          widget={widget}
+          onUpdate={(newWidget) => {
+            return;
+            // TODO ver que pasa acá
+            setWidgets((current) =>
+              current.map((w) => {
+                return w.id === newWidget.id ? newWidget : w;
+              })
+            );
+          }}
+        />
       ))}
     </View>
   );
 };
 
-export default App;
+export default React.memo(App);
