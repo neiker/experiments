@@ -1,86 +1,66 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { Button, View } from "react-native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
-import { Widget, WidgetComponent } from "./src/Widget";
+import { List } from "./src/list";
+import { Canvas } from "./src/canvas";
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fafafa",
-  },
-});
+const Stack = createStackNavigator();
 
-const defaultWidget: Widget[] = [
-  {
-    id: "1",
-    x: 50,
-    y: 50,
-    width: 120,
-    height: 120,
-    properties: {
-      color: "yellow",
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    },
-  },
-  {
-    id: "2",
-    x: 452,
-    y: 11,
-    width: 120,
-    height: 120,
-    properties: {
-      color: "green",
-      text:
-        "Suspendisse eu scelerisque magna, vitae vestibulum ex. Phasellus ut aliquet sapien. ",
-    },
-  },
-  {
-    id: "3",
-    x: 34,
-    y: 431,
-    width: 120,
-    height: 120,
-    properties: {
-      color: "blue",
-      text: "Cras aliquam est eget ex pulvinar, vitae egestas lacus sagittis. ",
-    },
-  },
-  {
-    id: "4",
-    x: 105,
-    y: 401,
-    width: 180,
-    height: 120,
-    properties: {
-      color: "red",
-      text:
-        "Cras facilisis justo ligula, at vulputate lorem ornare nec. Duis ac enim leo.",
-    },
-  },
+const screens = [
+  { name: "List ", component: List, title: "Sorted list" },
+  { name: "Canvas ", component: Canvas, title: "Draggable stickies" },
 ];
 
-const App: React.FC = () => {
-  const [widgets, setWidgets] = React.useState<Widget[]>(defaultWidget);
+function HomeScreen() {
+  const { navigate } = useNavigation();
 
   return (
-    <View style={styles.container}>
-      {widgets.map((widget) => (
-        <WidgetComponent
-          key={widget.id}
-          widget={widget}
-          onUpdate={(newWidget) => {
-            return;
-            // TODO ver que pasa acá
-            setWidgets((current) =>
-              current.map((w) => {
-                return w.id === newWidget.id ? newWidget : w;
-              })
-            );
+    <View
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {screens.map((screen) => (
+        <Button
+          key={screen.name}
+          onPress={() => {
+            navigate(screen.name);
           }}
+          title={screen.name}
         />
       ))}
     </View>
   );
-};
+}
 
-export default React.memo(App);
+const App = () => (
+  <NavigationContainer>
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      {screens.map((screen) => (
+        <Stack.Screen
+          name={screen.name}
+          component={screen.component}
+          options={{
+            title: screen.title,
+          }}
+        />
+      ))}
+      <Stack.Screen name="Canvas" component={Canvas} />
+    </Stack.Navigator>
+  </NavigationContainer>
+);
+
+export default App;
