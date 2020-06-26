@@ -18,30 +18,27 @@ export interface Box {
 
 export const Item: React.FC<{ data: Box }> = ({ data }) => {
   const panGesture = usePanGestureHandler();
-  const tapGesture = useTapGestureHandler();
+  const longPressGesture = useTapGestureHandler();
 
   const translate = useVector(0, 0);
 
-  const zIndex = cond(eq(tapGesture.state, State.ACTIVE), 2, 1);
-  const scale = cond(eq(tapGesture.state, State.ACTIVE), 1.02, 1);
-  const rotateZ = cond(eq(tapGesture.state, State.ACTIVE), 0.03, 0);
+  const zIndex = cond(eq(longPressGesture.state, State.ACTIVE), 2, 1);
+  const scale = cond(eq(longPressGesture.state, State.ACTIVE), 1.02, 1);
+  const rotateZ = cond(eq(longPressGesture.state, State.ACTIVE), 0.03, 0);
 
   useCode(
     () => [
       cond(
         and(
           eq(panGesture.state, State.ACTIVE),
-          eq(tapGesture.state, State.ACTIVE)
+          eq(longPressGesture.state, State.ACTIVE)
         ),
         [
           set(translate.x, panGesture.translation.x),
           set(translate.y, panGesture.translation.y),
-        ]
+        ],
+        [set(translate.x, 0), set(translate.y, 0)]
       ),
-      cond(eq(panGesture.state, State.END), [
-        set(translate.x, 0),
-        set(translate.y, 0),
-      ]),
     ],
     []
   );
@@ -51,7 +48,7 @@ export const Item: React.FC<{ data: Box }> = ({ data }) => {
 
   return (
     <LongPressGestureHandler
-      {...tapGesture.gestureHandler}
+      {...longPressGesture.gestureHandler}
       minDurationMs={250}
       simultaneousHandlers={panRef}
       ref={tapRef}
