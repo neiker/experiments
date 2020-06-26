@@ -36,9 +36,13 @@ export const Item: React.FC<{ data: Box }> = ({ data }) => {
         [
           set(translate.x, panGesture.translation.x),
           set(translate.y, panGesture.translation.y),
-        ],
-        [set(translate.x, 0), set(translate.y, 0)]
+        ]
       ),
+
+      cond(eq(panGesture.state, State.END), [
+        set(translate.x, 0),
+        set(translate.y, 0),
+      ]),
     ],
     []
   );
