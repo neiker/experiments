@@ -2,7 +2,6 @@ import React from "react";
 import { Button, View } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { List } from "./src/list";
 import { Canvas } from "./src/canvas";
@@ -51,6 +50,7 @@ const App = () => (
 
       {screens.map((screen) => (
         <Stack.Screen
+          key={screen.name}
           name={screen.name}
           component={screen.component}
           options={{
