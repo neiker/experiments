@@ -1,14 +1,22 @@
 import React from "react";
-import { Button, View } from "react-native";
+import { StatusBar } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import { ListItem } from "react-native-elements";
+import { FlatList } from "react-native-gesture-handler";
 
 import { List } from "./src/list";
 import { Canvas } from "./src/canvas";
 
 const Stack = createStackNavigator();
 
-const screens = [
+type Screen = {
+  name: string;
+  component: React.FC;
+  title: string;
+};
+
+const screens: Screen[] = [
   { name: "List ", component: List, title: "Sorted list" },
   { name: "Canvas ", component: Canvas, title: "Draggable stickies" },
 ];
@@ -16,35 +24,37 @@ const screens = [
 function HomeScreen() {
   const { navigate } = useNavigation();
 
-  return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
+  const renderItem = ({ item }: { item: Screen }) => (
+    <ListItem
+      title={item.name}
+      onPress={() => {
+        navigate(item.name);
       }}
-    >
-      {screens.map((screen) => (
-        <Button
-          key={screen.name}
-          onPress={() => {
-            navigate(screen.name);
-          }}
-          title={screen.name}
-        />
-      ))}
-    </View>
+      bottomDivider
+      chevron
+    />
   );
+  const keyExtractor = (_: Screen, index: number) => index.toString();
+  return <FlatList {...{ renderItem, data: screens, keyExtractor }} />;
 }
 
 const App = () => (
   <NavigationContainer>
-    <Stack.Navigator>
+    <StatusBar barStyle="light-content" />
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: "#2089dc",
+        },
+        headerTintColor: "#fafafa",
+        headerBackTitleVisible: false,
+      }}
+    >
       <Stack.Screen
         name="Home"
         component={HomeScreen}
         options={{
-          headerShown: false,
+          title: "Experiments",
         }}
       />
 
