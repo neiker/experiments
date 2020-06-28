@@ -1,12 +1,16 @@
 import React from "react";
 import { StatusBar } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+  createStackNavigator,
+  StackNavigationOptions,
+} from "@react-navigation/stack";
 import { ListItem } from "react-native-elements";
 import { FlatList } from "react-native-gesture-handler";
 
 import { List } from "./src/list";
 import { Canvas } from "./src/canvas";
+import { TwitterHeader } from "./src/twitter-header";
 
 const Stack = createStackNavigator();
 
@@ -14,11 +18,20 @@ type Screen = {
   name: string;
   component: React.FC;
   title: string;
+  screenOptions?: StackNavigationOptions;
 };
 
 const screens: Screen[] = [
   { name: "List ", component: List, title: "Sorted list" },
   { name: "Canvas ", component: Canvas, title: "Draggable stickies" },
+  {
+    name: "TwitterHeader ",
+    component: TwitterHeader,
+    title: "Twitter Header",
+    screenOptions: {
+      headerShown: false,
+    },
+  },
 ];
 
 function HomeScreen() {
@@ -26,7 +39,7 @@ function HomeScreen() {
 
   const renderItem = ({ item }: { item: Screen }) => (
     <ListItem
-      title={item.name}
+      title={item.title}
       onPress={() => {
         navigate(item.name);
       }}
@@ -35,6 +48,7 @@ function HomeScreen() {
     />
   );
   const keyExtractor = (_: Screen, index: number) => index.toString();
+
   return <FlatList {...{ renderItem, data: screens, keyExtractor }} />;
 }
 
@@ -64,11 +78,11 @@ const App = () => (
           name={screen.name}
           component={screen.component}
           options={{
+            ...screen.screenOptions,
             title: screen.title,
           }}
         />
       ))}
-      <Stack.Screen name="Canvas" component={Canvas} />
     </Stack.Navigator>
   </NavigationContainer>
 );
