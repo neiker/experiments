@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { createStackNavigator, useHeaderHeight } from "@react-navigation/stack";
 import { ListItem } from "react-native-elements";
 import { FlatList } from "react-native-gesture-handler";
-import Animated, { Value, divide, event, set } from "react-native-reanimated";
+import Animated, { divide, event, set } from "react-native-reanimated";
 import { diffClamp, useValue } from "react-native-redash";
 import { Dimensions, View } from "react-native";
 import { RouteProp } from "@react-navigation/native";
@@ -126,6 +126,7 @@ export const TwitterHeader = () => {
   const height = headerHeight + windowHeight;
 
   const y = useValue(0);
+
   const translateY = divide(diffClamp(y, 0, headerHeight), -1);
 
   return (
@@ -135,18 +136,14 @@ export const TwitterHeader = () => {
         transform: [{ translateY }],
       }}
     >
-      <View style={{ height, overflow: "hidden" }}>
+      <View style={{ height }}>
         <Stack.Navigator
           screenOptions={{
             headerStyle: {
-              backgroundColor: "rgb(21, 32, 43)",
+              backgroundColor: "#15202b",
             },
             headerTintColor: "#fafafa",
             headerBackTitleVisible: false,
-            cardStyle: {
-              backgroundColor: "transparent",
-              overflow: "visible",
-            },
           }}
         >
           <Stack.Screen
