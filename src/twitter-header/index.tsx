@@ -73,6 +73,17 @@ const data = [
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
+const keyExtractor = (_: TweetData, index: number) => index.toString();
+const renderItem = ({ item }: { item: TweetData }) => (
+  <ListItem
+    title={item.author.name}
+    subtitle={item.content}
+    subtitleStyle={{ fontSize: 12 }}
+    leftAvatar={{ source: { uri: item.author.avatar_url } }}
+    bottomDivider
+  />
+);
+
 const List: React.FC<{
   route: RouteProp<StackTypes, "List">;
 }> = ({ route }) => {
@@ -83,27 +94,15 @@ const List: React.FC<{
     setHeaderHeight(headerHeight);
   }, [headerHeight, setHeaderHeight]);
 
-  const keyExtractor = (_: TweetData, index: number) => index.toString();
-
   // We cancel the translation on the scroll while header is hiding
   const translateY = diffClamp(y, 0, headerHeight);
-
-  const renderItem = ({ item }: { item: TweetData }) => (
-    <ListItem
-      title={item.author.name}
-      subtitle={item.content}
-      subtitleStyle={{ fontSize: 12 }}
-      leftAvatar={{ source: { uri: item.author.avatar_url } }}
-      bottomDivider
-    />
-  );
 
   return (
     <AnimatedFlatList
       onScroll={event([
         {
-          nativeEvent: ({ contentOffset }) => {
-            return set(y, contentOffset.y);
+          nativeEvent: {
+            contentOffset: { y },
           },
         },
       ])}
