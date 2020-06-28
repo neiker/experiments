@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import { createStackNavigator, useHeaderHeight } from "@react-navigation/stack";
 import { ListItem } from "react-native-elements";
 import { FlatList } from "react-native-gesture-handler";
-import Animated, { Value, divide } from "react-native-reanimated";
-import { onScrollEvent, diffClamp, useValue } from "react-native-redash";
+import Animated, { Value, divide, event, set } from "react-native-reanimated";
+import { diffClamp, useValue } from "react-native-redash";
 import { Dimensions, View } from "react-native";
 import { RouteProp } from "@react-navigation/native";
 
@@ -85,6 +85,9 @@ const List: React.FC<{
 
   const keyExtractor = (_: TweetData, index: number) => index.toString();
 
+  // We cancel the translation on the scroll while header is hiding
+  const translateY = diffClamp(y, 0, headerHeight);
+
   const renderItem = ({ item }: { item: TweetData }) => (
     <ListItem
       title={item.author.name}
@@ -97,7 +100,16 @@ const List: React.FC<{
 
   return (
     <AnimatedFlatList
-      onScroll={onScrollEvent({ y: y })}
+      onScroll={event([
+        {
+          nativeEvent: ({ contentOffset }) => {
+            return set(y, contentOffset.y);
+          },
+        },
+      ])}
+      ListHeaderComponent={() => (
+        <Animated.View style={{ height: translateY }} />
+      )}
       keyExtractor={keyExtractor}
       data={data}
       renderItem={renderItem}
@@ -131,6 +143,10 @@ export const TwitterHeader = () => {
             },
             headerTintColor: "#fafafa",
             headerBackTitleVisible: false,
+            cardStyle: {
+              backgroundColor: "transparent",
+              overflow: "visible",
+            },
           }}
         >
           <Stack.Screen
