@@ -1,6 +1,7 @@
 import React from "react";
 import { Text } from "react-native";
-import Reanimated, { Value } from "react-native-reanimated";
+import Reanimated from "react-native-reanimated";
+import { useVector } from "react-native-redash";
 
 import { Draggable } from "./Draggable";
 import { Selecteable } from "./Selecteable";
@@ -21,34 +22,34 @@ export const WidgetComponent: React.FC<{
   widget: Widget;
   onUpdate: (widget: Widget) => void;
 }> = ({ widget, onUpdate }) => {
-  const width = new Value(widget.width);
-  const height = new Value(widget.height);
-  const x = new Value(widget.x);
-  const y = new Value(widget.y);
+  const position = useVector(widget.x, widget.y);
+  const size = useVector(widget.width, widget.height);
 
-  const onDragEnd = (position: { x: number; y: number }) => {
+  const onDragEnd = ({ x, y }: { x: number; y: number }) => {
     onUpdate({
       ...widget,
-      ...position,
+      x,
+      y,
     });
   };
 
-  const onResizeEnd = (size: { width: number; height: number }) =>
+  const onResizeEnd = ({ width, height }: { width: number; height: number }) =>
     onUpdate({
       ...widget,
-      ...size,
+      width,
+      height,
     });
 
   return (
-    <Draggable x={x} y={y} width={width} height={height} onDragEnd={onDragEnd}>
-      <Selecteable width={width} height={height} onResizeEnd={onResizeEnd}>
+    <Draggable position={position} size={size} onDragEnd={onDragEnd}>
+      <Selecteable size={size} onResizeEnd={onResizeEnd}>
         <Reanimated.View
           style={{
             padding: 10,
             justifyContent: "center",
             alignContent: "center",
-            width,
-            height,
+            width: size.x,
+            height: size.y,
             backgroundColor: widget.properties.color,
           }}
         >

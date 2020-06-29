@@ -2,16 +2,18 @@ import React from "react";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 import {
   usePanGestureHandler,
-  withOffset,
   diffClamp,
+  Vector,
+  useVector,
 } from "react-native-redash";
 import Reanimated, {
-  Value,
   sub,
   useCode,
   cond,
   eq,
   call,
+  set,
+  add,
 } from "react-native-reanimated";
 import { Dimensions, StyleSheet } from "react-native";
 
@@ -26,37 +28,48 @@ const styles = StyleSheet.create({
 });
 
 export const Draggable: React.FC<{
-  x: Value<number>;
-  y: Value<number>;
-  width: Value<number>;
-  height: Value<number>;
+  position: Vector<Reanimated.Value<number>>;
+  size: Vector<Reanimated.Value<number>>;
+
   onDragEnd: (position: { x: number; y: number }) => void;
-}> = ({ children, x, y, width, height, onDragEnd }) => {
+}> = ({ children, position, size, onDragEnd }) => {
   const panGesture = usePanGestureHandler();
 
-  const translateX = diffClamp(
-    withOffset(panGesture.translation.x, panGesture.state, x),
-    0,
-    sub(windowSize.width, width)
-  );
-
-  const translateY = diffClamp(
-    withOffset(panGesture.translation.y, panGesture.state, y),
-    0,
-    sub(windowSize.height, height)
-  );
-
   const onEnd = React.useCallback(
-    (position: readonly number[]) => {
-      onDragEnd({ x: position[0], y: position[1] });
+    (newPosition: readonly number[]) => {
+      onDragEnd({ x: newPosition[0], y: newPosition[1] });
     },
     [onDragEnd]
   );
 
+  const offset = useVector(0, 0);
+
   useCode(
     () => [
+      cond(eq(panGesture.state, State.BEGAN), [
+        set(offset.x, position.x),
+        set(offset.y, position.y),
+      ]),
+      cond(eq(panGesture.state, State.ACTIVE), [
+        set(
+          position.x,
+          diffClamp(
+            add(panGesture.translation.x, offset.x),
+            0,
+            sub(windowSize.width, size.x)
+          )
+        ),
+        set(
+          position.y,
+          diffClamp(
+            add(panGesture.translation.y, offset.y),
+            0,
+            sub(windowSize.height - 62, size.y)
+          )
+        ),
+      ]),
       cond(eq(panGesture.state, State.END), [
-        call([translateX, translateY], onEnd),
+        call([position.x, position.y], onEnd),
       ]),
     ],
     []
@@ -72,7 +85,7 @@ export const Draggable: React.FC<{
               inputRange: [State.UNDETERMINED, State.ACTIVE, State.END],
               outputRange: [1, 0.5, 1],
             }),
-            transform: [{ translateX }, { translateY }],
+            transform: [{ translateX: position.x }, { translateY: position.y }],
           },
         ]}
       >

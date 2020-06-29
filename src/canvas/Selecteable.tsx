@@ -15,20 +15,19 @@ import Reanimated, {
   add,
   or,
 } from "react-native-reanimated";
-import { usePanGestureHandler, diffClamp } from "react-native-redash";
+import { usePanGestureHandler, diffClamp, Vector } from "react-native-redash";
 
 const ResizeHandler: React.FC<{
-  width: Value<number>;
-  height: Value<number>;
+  size: Vector<Reanimated.Value<number>>;
   onResizeEnd: (size: { width: number; height: number }) => void;
-}> = ({ width, height, onResizeEnd }) => {
+}> = ({ size, onResizeEnd }) => {
   const { gestureHandler, state, translation } = usePanGestureHandler();
   const originalWidth = new Value(0);
   const originalHeight = new Value(0);
 
   const onEnd = React.useCallback(
-    (size) => {
-      onResizeEnd({ width: size[0], height: size[1] });
+    ([width, height]) => {
+      onResizeEnd({ width, height });
     },
     [onResizeEnd]
   );
@@ -36,18 +35,18 @@ const ResizeHandler: React.FC<{
   useCode(
     () => [
       cond(or(eq(state, State.BEGAN), eq(state, State.UNDETERMINED)), [
-        set(originalWidth, width),
-        set(originalHeight, height),
+        set(originalWidth, size.x),
+        set(originalHeight, size.y),
       ]),
       cond(eq(state, State.ACTIVE), [
-        set(width, diffClamp(add(originalWidth, translation.x), 100, 200)),
-        set(height, diffClamp(add(originalHeight, translation.y), 100, 200)),
+        set(size.x, diffClamp(add(originalWidth, translation.x), 100, 200)),
+        set(size.y, diffClamp(add(originalHeight, translation.y), 100, 200)),
       ]),
       cond(or(eq(state, State.FAILED), eq(state, State.CANCELLED)), [
-        set(width, originalWidth),
-        set(height, originalHeight),
+        set(size.x, originalWidth),
+        set(size.y, originalHeight),
       ]),
-      cond(eq(state, State.END), call([width, height], onEnd)),
+      cond(eq(state, State.END), call([size.x, size.y], onEnd)),
     ],
     []
   );
@@ -82,10 +81,9 @@ const ResizeHandler: React.FC<{
 };
 
 export const Selecteable: React.FC<{
-  width: Value<number>;
-  height: Value<number>;
+  size: Vector<Reanimated.Value<number>>;
   onResizeEnd: (size: { width: number; height: number }) => void;
-}> = ({ children, width, height, onResizeEnd }) => {
+}> = ({ children, size, onResizeEnd }) => {
   const [selected, setSelected] = React.useState(false);
 
   const toggle = React.useCallback(() => setSelected((c) => !c), []);
@@ -100,7 +98,7 @@ export const Selecteable: React.FC<{
       }}
     >
       <View>
-        {selected && <ResizeHandler {...{ width, height, onResizeEnd }} />}
+        {selected && <ResizeHandler {...{ size, onResizeEnd }} />}
         {children}
       </View>
     </TapGestureHandler>

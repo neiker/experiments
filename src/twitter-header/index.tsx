@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { createStackNavigator, useHeaderHeight } from "@react-navigation/stack";
 import { ListItem } from "react-native-elements";
 import { FlatList } from "react-native-gesture-handler";
-import Animated, { divide, event, set } from "react-native-reanimated";
+import Animated, { divide, event } from "react-native-reanimated";
 import { diffClamp, useValue } from "react-native-redash";
 import { Dimensions, View } from "react-native";
 import { RouteProp } from "@react-navigation/native";
