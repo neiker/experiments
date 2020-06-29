@@ -16,6 +16,7 @@ export interface Widget {
     color: string;
     text: string;
   };
+  selected: boolean;
 }
 
 export const WidgetComponent: React.FC<{
@@ -26,23 +27,42 @@ export const WidgetComponent: React.FC<{
   const size = useVector(widget.width, widget.height);
 
   const onDragEnd = ({ x, y }: { x: number; y: number }) => {
-    onUpdate({
-      ...widget,
-      x,
-      y,
-    });
+    // onUpdate({
+    //   ...widget,
+    //   x,
+    //   y,
+    // });
   };
 
-  const onResizeEnd = ({ width, height }: { width: number; height: number }) =>
+  const onResizeEnd = ({
+    width,
+    height,
+  }: {
+    width: number;
+    height: number;
+  }) => {
     onUpdate({
       ...widget,
       width,
       height,
     });
+  };
+
+  const onPressSelect = () => {
+    onUpdate({
+      ...widget,
+      selected: !widget.selected,
+    });
+  };
 
   return (
     <Draggable position={position} size={size} onDragEnd={onDragEnd}>
-      <Selecteable size={size} onResizeEnd={onResizeEnd}>
+      <Selecteable
+        size={size}
+        onResizeEnd={onResizeEnd}
+        selected={widget.selected}
+        onPress={onPressSelect}
+      >
         <Reanimated.View
           style={{
             padding: 10,

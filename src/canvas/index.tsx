@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
+import { TapGestureHandler, State } from "react-native-gesture-handler";
 
 import { Widget, WidgetComponent } from "./Widget";
 
@@ -57,28 +58,39 @@ const defaultWidget: Widget[] = [
         "Cras facilisis justo ligula, at vulputate lorem ornare nec. Duis ac enim leo.",
     },
   },
-];
+].map((w) => ({ ...w, selected: false }));
 
 export const Canvas: React.FC = () => {
   const [widgets, setWidgets] = React.useState<Widget[]>(defaultWidget);
 
+  const resetSelection = () => {
+    setWidgets((ws) =>
+      ws.map((w) => (w.selected ? { ...w, selected: false } : w))
+    );
+  };
   return (
-    <View style={styles.container}>
-      {widgets.map((widget) => (
-        <WidgetComponent
-          key={widget.id}
-          widget={widget}
-          onUpdate={(newWidget) => {
-            return;
-            // TODO check why this don't work
-            // setWidgets((current) =>
-            //   current.map((w) => {
-            //     return w.id === newWidget.id ? newWidget : w;
-            //   })
-            // );
-          }}
-        />
-      ))}
-    </View>
+    <TapGestureHandler
+      onHandlerStateChange={(ev) => {
+        if (ev.nativeEvent.state === State.ACTIVE) {
+          resetSelection();
+        }
+      }}
+    >
+      <View style={styles.container}>
+        {widgets.map((widget) => (
+          <WidgetComponent
+            key={widget.id}
+            widget={widget}
+            onUpdate={(newWidget) => {
+              setWidgets((current) =>
+                current.map((w) => {
+                  return w.id === newWidget.id ? newWidget : w;
+                })
+              );
+            }}
+          />
+        ))}
+      </View>
+    </TapGestureHandler>
   );
 };

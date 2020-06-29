@@ -82,18 +82,15 @@ const ResizeHandler: React.FC<{
 
 export const Selecteable: React.FC<{
   size: Vector<Reanimated.Value<number>>;
+  selected: boolean;
   onResizeEnd: (size: { width: number; height: number }) => void;
-}> = ({ children, size, onResizeEnd }) => {
-  const [selected, setSelected] = React.useState(false);
-
-  const toggle = React.useCallback(() => setSelected((c) => !c), []);
-
-  console.log(selected);
+  onPress: () => void;
+}> = ({ children, size, selected, onResizeEnd, onPress }) => {
   return (
     <TapGestureHandler
       onHandlerStateChange={({ nativeEvent }) => {
         if (nativeEvent.state === State.ACTIVE) {
-          toggle();
+          onPress();
         }
       }}
     >
