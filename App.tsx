@@ -11,6 +11,7 @@ import { FlatList } from "react-native-gesture-handler";
 import { List } from "./src/list";
 import { Canvas } from "./src/canvas";
 import { TwitterHeader } from "./src/twitter-header";
+import { AnimatedWave } from "./src/animated-wave";
 
 const Stack = createStackNavigator();
 
@@ -32,6 +33,7 @@ const screens: Screen[] = [
       headerShown: false,
     },
   },
+  { name: "AnimatedWave ", component: AnimatedWave, title: "Animated Wave" },
 ];
 
 function HomeScreen() {
