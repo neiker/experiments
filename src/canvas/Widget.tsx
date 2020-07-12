@@ -27,6 +27,7 @@ export const WidgetComponent: React.FC<{
   const size = useVector(widget.width, widget.height);
 
   const onDragEnd = ({ x, y }: { x: number; y: number }) => {
+    console.log({ x, y });
     // onUpdate({
     //   ...widget,
     //   x,

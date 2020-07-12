@@ -18,58 +18,12 @@ const Stack = createStackNavigator<StackTypes>();
 interface TweetData {
   author: {
     name: string;
-    avatar_url: string;
+    avatarUrl: string;
   };
   content: string;
 }
 
-const list: TweetData[] = [
-  {
-    author: {
-      name: "Amy Farha",
-      avatar_url:
-        "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg",
-    },
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ligula neque, placerat vel purus ut, efficitur pulvinar velit. Nullam aliquam. ",
-  },
-  {
-    author: {
-      name: "Chris Jackson",
-      avatar_url:
-        "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
-    },
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras feugiat ut odio sit amet eleifend. Sed vel luctus felis, id vulputate laoreet. ",
-  },
-];
-
-const data = [
-  ...list,
-  ...list,
-  ...list,
-  ...list,
-  ...list,
-  ...list,
-  ...list,
-  ...list,
-  ...list,
-  ...list,
-  ...list,
-  ...list,
-  ...list,
-  ...list,
-  ...list,
-  ...list,
-  ...list,
-  ...list,
-  ...list,
-  ...list,
-  ...list,
-  ...list,
-  ...list,
-  ...list,
-];
+const data: TweetData[] = require("./tweets.json");
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -79,7 +33,7 @@ const renderItem = ({ item }: { item: TweetData }) => (
     title={item.author.name}
     subtitle={item.content}
     subtitleStyle={{ fontSize: 12 }}
-    leftAvatar={{ source: { uri: item.author.avatar_url } }}
+    leftAvatar={{ source: { uri: item.author.avatarUrl } }}
     bottomDivider
   />
 );

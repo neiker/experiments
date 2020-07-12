@@ -47,7 +47,9 @@ export const Item: React.FC<{ data: Box }> = ({ data }) => {
     []
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const panRef = React.useRef<any>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tapRef = React.useRef<any>();
 
   return (
