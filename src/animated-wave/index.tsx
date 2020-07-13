@@ -25,10 +25,6 @@ function useAnimatedWave(paths: string[]) {
     outputRange: paths,
   });
 
-  console.log({
-    inputRange: paths.map((_, index) => index / (paths.length - 1)),
-    outputRange: paths,
-  });
   useCode(() => {
     return [
       set(
