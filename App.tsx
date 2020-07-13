@@ -11,6 +11,7 @@ import { FlatList } from "react-native-gesture-handler";
 import { List } from "./src/list";
 import { Canvas } from "./src/canvas";
 import { TwitterHeader } from "./src/twitter-header";
+import { AnimatedWaveScreen } from "./src/animated-wave";
 
 const Stack = createStackNavigator();
 
@@ -31,6 +32,11 @@ const screens: Screen[] = [
     screenOptions: {
       headerShown: false,
     },
+  },
+  {
+    name: "AnimatedWave ",
+    component: AnimatedWaveScreen,
+    title: "Animated Wave",
   },
 ];
 
@@ -56,9 +62,15 @@ const App = () => (
   <NavigationContainer>
     <StatusBar barStyle="light-content" />
     <Stack.Navigator
+      headerMode="screen"
       screenOptions={{
         headerStyle: {
           backgroundColor: "#2089dc",
+          shadowRadius: 0,
+          shadowOffset: {
+            height: 0,
+          },
+          elevation: 0,
         },
         headerTintColor: "#fafafa",
         headerBackTitleVisible: false,
