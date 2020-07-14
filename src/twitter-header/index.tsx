@@ -60,6 +60,7 @@ const List: React.FC<{
           },
         },
       ])}
+      scrollEventThrottle={1}
       ListHeaderComponent={() => (
         <Animated.View style={{ height: translateY }} />
       )}
