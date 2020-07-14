@@ -27,6 +27,8 @@ export const WidgetComponent: React.FC<{
   const size = useVector(widget.width, widget.height);
 
   const onDragEnd = ({ x, y }: { x: number; y: number }) => {
+    // TODO
+    // eslint-disable-next-line no-console
     console.log({ x, y });
     // onUpdate({
     //   ...widget,
