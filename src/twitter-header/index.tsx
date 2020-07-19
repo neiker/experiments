@@ -1,17 +1,30 @@
 import React, { useEffect } from "react";
 import { createStackNavigator, useHeaderHeight } from "@react-navigation/stack";
+import { FlatList, Dimensions, View, Platform } from "react-native";
 import { ListItem } from "react-native-elements";
-import { FlatList } from "react-native-gesture-handler";
-import Animated, { divide, event } from "react-native-reanimated";
-import { diffClamp, useValue } from "react-native-redash";
-import { Dimensions, View } from "react-native";
-import { RouteProp } from "@react-navigation/native";
+import {
+  PanGestureHandler,
+  NativeViewGestureHandler,
+} from "react-native-gesture-handler";
+import Animated, { divide } from "react-native-reanimated";
+import {
+  diffClamp,
+  usePanGestureHandler,
+  withOffset,
+} from "react-native-redash";
+
+type ScrollContext = {
+  listRef?: React.RefObject<NativeViewGestureHandler>;
+  panRef?: React.RefObject<PanGestureHandler>;
+  translateY?: Animated.Node<number>;
+  setHeaderHeight: (value: number) => void;
+};
+const ScrollContext = React.createContext<ScrollContext>({
+  setHeaderHeight: () => {},
+});
 
 type StackTypes = {
-  List: {
-    y: Animated.Value<number>;
-    setHeaderHeight: (value: number) => void;
-  };
+  List: undefined;
 };
 const Stack = createStackNavigator<StackTypes>();
 
@@ -25,9 +38,8 @@ interface TweetData {
 
 const data: TweetData[] = require("./tweets.json");
 
-const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
-
 const keyExtractor = (_: TweetData, index: number) => index.toString();
+
 const renderItem = ({ item }: { item: TweetData }) => (
   <ListItem
     title={item.author.name}
@@ -38,75 +50,92 @@ const renderItem = ({ item }: { item: TweetData }) => (
   />
 );
 
-const List: React.FC<{
-  route: RouteProp<StackTypes, "List">;
-}> = ({ route }) => {
-  const { y, setHeaderHeight } = route.params;
+const List: React.FC = () => {
+  const { setHeaderHeight, panRef, listRef, translateY } = React.useContext(
+    ScrollContext
+  );
+
   const headerHeight = useHeaderHeight();
 
   useEffect(() => {
     setHeaderHeight(headerHeight);
   }, [headerHeight, setHeaderHeight]);
 
-  // We cancel the translation on the scroll while header is hiding
-  const translateY = diffClamp(y, 0, headerHeight);
-
   return (
-    <AnimatedFlatList
-      onScroll={event([
-        {
-          nativeEvent: {
-            contentOffset: { y },
-          },
-        },
-      ])}
-      scrollEventThrottle={1}
-      ListHeaderComponent={() => (
-        <Animated.View style={{ height: translateY }} />
-      )}
-      keyExtractor={keyExtractor}
-      data={data}
-      renderItem={renderItem}
-      bounces={false}
-    />
+    <NativeViewGestureHandler ref={listRef} simultaneousHandlers={panRef}>
+      <FlatList
+        ListHeaderComponent={() =>
+          // on iOS we cancel the translation on the scroll while header is hiding
+          Platform.OS === "ios" && translateY !== undefined ? (
+            <Animated.View style={{ height: divide(translateY, -1) }} />
+          ) : null
+        }
+        keyExtractor={keyExtractor}
+        data={data}
+        renderItem={renderItem}
+        bounces={false}
+      />
+    </NativeViewGestureHandler>
   );
 };
 
 const windowHeight = Dimensions.get("window").height;
 
+// First child of Context.Provider should be memoized
+const Navigator = React.memo(() => (
+  <Stack.Navigator
+    screenOptions={{
+      headerStyle: {
+        backgroundColor: "#15202b",
+      },
+      headerTintColor: "#fafafa",
+      headerBackTitleVisible: false,
+    }}
+  >
+    <Stack.Screen name="List" component={List} />
+  </Stack.Navigator>
+));
+
 export const TwitterHeader = () => {
   const [headerHeight, setHeaderHeight] = React.useState(0);
 
+  const listRef = React.useRef<NativeViewGestureHandler>(null);
+  const panRef = React.useRef<PanGestureHandler>(null);
+
+  const { gestureHandler, state, translation } = usePanGestureHandler();
+
   const height = headerHeight + windowHeight;
 
-  const y = useValue(0);
+  const y = withOffset(translation.y, state);
 
-  const translateY = divide(diffClamp(y, 0, headerHeight), -1);
+  const translateY = diffClamp(y, -headerHeight, 0);
 
   return (
-    <Animated.View
-      style={{
-        flex: 1,
-        transform: [{ translateY }],
-      }}
+    <PanGestureHandler
+      ref={panRef}
+      simultaneousHandlers={listRef}
+      {...gestureHandler}
     >
-      <View style={{ height }}>
-        <Stack.Navigator
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: "#15202b",
-            },
-            headerTintColor: "#fafafa",
-            headerBackTitleVisible: false,
-          }}
-        >
-          <Stack.Screen
-            name="List"
-            component={List}
-            initialParams={{ y, setHeaderHeight }}
-          />
-        </Stack.Navigator>
-      </View>
-    </Animated.View>
+      <Animated.View
+        style={{
+          flex: 1,
+          height,
+          transform: [{ translateY }],
+        }}
+      >
+        <View style={{ height }}>
+          <ScrollContext.Provider
+            value={{
+              setHeaderHeight,
+              listRef,
+              panRef,
+              translateY,
+            }}
+          >
+            <Navigator />
+          </ScrollContext.Provider>
+        </View>
+      </Animated.View>
+    </PanGestureHandler>
   );
 };
