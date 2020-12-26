@@ -1,41 +1,37 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
-    "eject": "expo eject",
+    "start": "REACT_DEBUGGER=\"unset ELECTRON_RUN_AS_NODE && open -g 'rndebugger://set-debugger-loc?port=19001' ||\" expo start -c",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --max-warnings=0 --ignore-path .gitignore",
     "lint-fix": "npm run lint -- --fix"
   },
   "dependencies": {
     "@react-native-community/masked-view": "0.1.10",
-    "@react-navigation/native": "5.7.0",
-    "@react-navigation/stack": "5.7.0",
-    "expo": "38.0.8",
+    "@react-navigation/native": "5.8.10",
+    "@react-navigation/stack": "5.12.8",
+    "expo": "^39.0.0",
     "random-color": "1.0.1",
-    "react": "16.11.0",
-    "react-dom": "16.11.0",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-38.0.2.tar.gz",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.3.tar.gz",
     "react-native-elements": "2.0.4",
-    "react-native-gesture-handler": "1.6.1",
-    "react-native-reanimated": "1.9.0",
+    "react-native-gesture-handler": "~1.7.0",
+    "react-native-reanimated": "~1.13.0",
     "react-native-redash": "14.2.2",
-    "react-native-safe-area-context": "3.0.7",
-    "react-native-screens": "2.9.0",
+    "react-native-safe-area-context": "3.1.4",
+    "react-native-screens": "~2.10.1",
     "react-native-svg": "12.1.0",
-    "react-native-web": "0.11.7"
+    "react-native-web": "~0.13.7"
   },
   "devDependencies": {
     "@babel/core": "7.10.5",
-    "@types/react": "16.9.41",
-    "@types/react-native": "0.62.13",
-    "babel-preset-expo": "8.2.3",
+    "@types/react": "~16.9.35",
+    "@types/react-native": "~0.63.2",
+    "babel-preset-expo": "^8.3.0",
     "eslint": "7.4.0",
-    "eslint-config-react-native-wcandillon": "3.3.2",
+    "eslint-config-react-native-wcandillon": "3.3.5",
     "husky": "4.2.5",
-    "typescript": "3.9.5"
+    "typescript": "~3.9.2"
   },
   "private": true,
   "husky": {
