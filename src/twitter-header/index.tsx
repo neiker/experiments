@@ -13,15 +13,15 @@ import {
   withOffset,
 } from "react-native-redash";
 
+import data from "./tweets.json";
+
 type ScrollContext = {
   listRef?: React.RefObject<NativeViewGestureHandler>;
   panRef?: React.RefObject<PanGestureHandler>;
   translateY?: Animated.Node<number>;
   setHeaderHeight: (value: number) => void;
 };
-const ScrollContext = React.createContext<ScrollContext>({
-  setHeaderHeight: () => {},
-});
+const ScrollContext = React.createContext<ScrollContext | undefined>(undefined);
 
 type StackTypes = {
   List: undefined;
@@ -36,8 +36,6 @@ interface TweetData {
   content: string;
 }
 
-const data: TweetData[] = require("./tweets.json");
-
 const keyExtractor = (_: TweetData, index: number) => index.toString();
 
 const renderItem = ({ item }: { item: TweetData }) => (
@@ -50,10 +48,20 @@ const renderItem = ({ item }: { item: TweetData }) => (
   />
 );
 
+function useScrollContext() {
+  const context = React.useContext(ScrollContext);
+
+  if (!context) {
+    throw new Error(
+      "useScrollContext should be used inside a descendant of ScrollContext.Provider"
+    );
+  }
+
+  return context;
+}
+
 const List: React.FC = () => {
-  const { setHeaderHeight, panRef, listRef, translateY } = React.useContext(
-    ScrollContext
-  );
+  const { setHeaderHeight, panRef, listRef, translateY } = useScrollContext();
 
   const headerHeight = useHeaderHeight();
 
