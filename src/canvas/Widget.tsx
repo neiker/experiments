@@ -1,7 +1,7 @@
 import React from "react";
 import { Text } from "react-native";
 import Reanimated from "react-native-reanimated";
-import { useVector } from "react-native-redash";
+import { useVector } from "react-native-redash/src/v1";
 
 import { Draggable } from "./Draggable";
 import { Selecteable } from "./Selecteable";

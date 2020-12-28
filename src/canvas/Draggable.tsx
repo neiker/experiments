@@ -5,7 +5,7 @@ import {
   diffClamp,
   Vector,
   useVector,
-} from "react-native-redash";
+} from "react-native-redash/src/v1";
 import Reanimated, {
   sub,
   useCode,

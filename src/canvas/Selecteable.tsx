@@ -15,7 +15,11 @@ import Reanimated, {
   add,
   or,
 } from "react-native-reanimated";
-import { usePanGestureHandler, diffClamp, Vector } from "react-native-redash";
+import {
+  usePanGestureHandler,
+  diffClamp,
+  Vector,
+} from "react-native-redash/src/v1";
 
 const ResizeHandler: React.FC<{
   size: Vector<Reanimated.Value<number>>;
