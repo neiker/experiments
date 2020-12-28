@@ -9,7 +9,7 @@ import {
   usePanGestureHandler,
   useTapGestureHandler,
   useVector,
-} from "react-native-redash";
+} from "react-native-redash/src/v1";
 
 export interface Box {
   id: number;

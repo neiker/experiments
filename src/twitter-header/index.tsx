@@ -11,7 +11,7 @@ import {
   diffClamp,
   usePanGestureHandler,
   withOffset,
-} from "react-native-redash";
+} from "react-native-redash/src/v1";
 
 import data from "./tweets.json";
 

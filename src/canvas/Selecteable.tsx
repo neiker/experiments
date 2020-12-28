@@ -4,52 +4,43 @@ import {
   State,
   TapGestureHandler,
   PanGestureHandler,
+  PanGestureHandlerGestureEvent,
 } from "react-native-gesture-handler";
 import Reanimated, {
-  Value,
-  useCode,
-  cond,
-  set,
-  call,
-  eq,
-  add,
-  or,
+  runOnJS,
+  useAnimatedGestureHandler,
 } from "react-native-reanimated";
-import { usePanGestureHandler, diffClamp, Vector } from "react-native-redash";
+import * as redash from "react-native-redash";
 
 const ResizeHandler: React.FC<{
-  size: Vector<Reanimated.Value<number>>;
+  size: redash.Vector<Reanimated.SharedValue<number>>;
   onResizeEnd: (size: { width: number; height: number }) => void;
 }> = ({ size, onResizeEnd }) => {
-  const { gestureHandler, state, translation } = usePanGestureHandler();
-  const originalWidth = new Value(0);
-  const originalHeight = new Value(0);
-
-  const onEnd = React.useCallback(
-    ([width, height]) => {
-      onResizeEnd({ width, height });
+  const gestureHandler = useAnimatedGestureHandler<
+    PanGestureHandlerGestureEvent,
+    { originalWidth: number; originalHeight: number }
+  >({
+    onStart: (_, ctx) => {
+      ctx.originalWidth = size.x.value;
+      ctx.originalHeight = size.y.value;
     },
-    [onResizeEnd]
-  );
+    onActive: (event, ctx) => {
+      size.x.value = redash.clamp(
+        ctx.originalWidth + event.translationX,
+        100,
+        200
+      );
+      size.y.value = redash.clamp(
+        ctx.originalHeight + event.translationY,
+        100,
+        200
+      );
+    },
+    onEnd: () => {
+      runOnJS(onResizeEnd)({ width: size.x.value, height: size.y.value });
+    },
+  });
 
-  useCode(
-    () => [
-      cond(or(eq(state, State.BEGAN), eq(state, State.UNDETERMINED)), [
-        set(originalWidth, size.x),
-        set(originalHeight, size.y),
-      ]),
-      cond(eq(state, State.ACTIVE), [
-        set(size.x, diffClamp(add(originalWidth, translation.x), 100, 200)),
-        set(size.y, diffClamp(add(originalHeight, translation.y), 100, 200)),
-      ]),
-      cond(or(eq(state, State.FAILED), eq(state, State.CANCELLED)), [
-        set(size.x, originalWidth),
-        set(size.y, originalHeight),
-      ]),
-      cond(eq(state, State.END), call([size.x, size.y], onEnd)),
-    ],
-    []
-  );
   return (
     <View
       pointerEvents="box-none"
@@ -63,8 +54,9 @@ const ResizeHandler: React.FC<{
         borderColor: "#99f",
       }}
     >
-      <PanGestureHandler {...gestureHandler}>
+      <PanGestureHandler onGestureEvent={gestureHandler}>
         <Reanimated.View
+          hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
           style={{
             width: 10,
             height: 10,
@@ -81,8 +73,8 @@ const ResizeHandler: React.FC<{
 };
 
 export const Selecteable: React.FC<{
-  size: Vector<Reanimated.Value<number>>;
-  selected: boolean;
+  size: redash.Vector<Reanimated.SharedValue<number>>;
+  selected: Reanimated.SharedValue<boolean>;
   onResizeEnd: (size: { width: number; height: number }) => void;
   onPress: () => void;
 }> = ({ children, size, selected, onResizeEnd, onPress }) => {
@@ -95,7 +87,7 @@ export const Selecteable: React.FC<{
       }}
     >
       <View>
-        {selected && <ResizeHandler {...{ size, onResizeEnd }} />}
+        {selected.value && <ResizeHandler {...{ size, onResizeEnd }} />}
         {children}
       </View>
     </TapGestureHandler>

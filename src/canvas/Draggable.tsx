@@ -1,23 +1,19 @@
 import React from "react";
-import { PanGestureHandler, State } from "react-native-gesture-handler";
 import {
-  usePanGestureHandler,
-  diffClamp,
-  Vector,
-  useVector,
-} from "react-native-redash";
+  PanGestureHandler,
+  PanGestureHandlerGestureEvent,
+} from "react-native-gesture-handler";
+import * as redash from "react-native-redash";
 import Reanimated, {
-  sub,
-  useCode,
-  cond,
-  eq,
-  call,
-  set,
-  add,
+  runOnJS,
+  useAnimatedGestureHandler,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
 } from "react-native-reanimated";
 import { Dimensions, StyleSheet } from "react-native";
-
-const windowSize = Dimensions.get("window");
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useHeaderHeight } from "@react-navigation/stack";
 
 const styles = StyleSheet.create({
   widgetPosition: {
@@ -27,68 +23,85 @@ const styles = StyleSheet.create({
   },
 });
 
+const clamp = (value: number, lowerBound: number, upperBound: number) => {
+  "worklet";
+  return Math.min(Math.max(lowerBound, value), upperBound);
+};
+
+function useScreenAvailableSize() {
+  const headerHeight = useHeaderHeight();
+  const insets = useSafeAreaInsets();
+  const windowSize = Dimensions.get("window");
+
+  return {
+    height: windowSize.height - headerHeight - insets.bottom,
+    width: windowSize.width,
+  };
+}
+
 export const Draggable: React.FC<{
-  position: Vector<Reanimated.Value<number>>;
-  size: Vector<Reanimated.Value<number>>;
+  position: redash.Vector<Reanimated.SharedValue<number>>;
+  size: redash.Vector<Reanimated.SharedValue<number>>;
 
   onDragEnd: (position: { x: number; y: number }) => void;
 }> = ({ children, position, size, onDragEnd }) => {
-  const panGesture = usePanGestureHandler();
+  const isActive = useSharedValue(false);
 
-  const onEnd = React.useCallback(
-    (newPosition: readonly number[]) => {
-      onDragEnd({ x: newPosition[0], y: newPosition[1] });
+  const screenAvailableSize = useScreenAvailableSize();
+
+  const panGestureHandler = useAnimatedGestureHandler<
+    PanGestureHandlerGestureEvent,
+    { offsetX: number; offsetY: number }
+  >({
+    onStart: (_, ctx) => {
+      isActive.value = true;
+
+      ctx.offsetX = position.x.value;
+      ctx.offsetY = position.y.value;
     },
-    [onDragEnd]
-  );
+    onActive: (event, ctx) => {
+      position.x.value = clamp(
+        event.translationX + ctx.offsetX,
+        0,
+        screenAvailableSize.width - size.x.value
+      );
 
-  const offset = useVector(0, 0);
+      position.y.value = clamp(
+        event.translationY + ctx.offsetY,
+        0,
+        screenAvailableSize.height - size.y.value
+      );
+    },
 
-  useCode(
-    () => [
-      cond(eq(panGesture.state, State.BEGAN), [
-        set(offset.x, position.x),
-        set(offset.y, position.y),
-      ]),
-      cond(eq(panGesture.state, State.ACTIVE), [
-        set(
-          position.x,
-          diffClamp(
-            add(panGesture.translation.x, offset.x),
-            0,
-            sub(windowSize.width, size.x)
-          )
-        ),
-        set(
-          position.y,
-          diffClamp(
-            add(panGesture.translation.y, offset.y),
-            0,
-            sub(windowSize.height - 62, size.y)
-          )
-        ),
-      ]),
-      cond(eq(panGesture.state, State.END), [
-        call([position.x, position.y], onEnd),
-      ]),
-    ],
-    []
-  );
+    onEnd: () => {
+      isActive.value = false;
+
+      runOnJS(onDragEnd)({ x: position.x.value, y: position.y.value });
+    },
+  });
+
+  const style = useAnimatedStyle(() => {
+    return {
+      shadowColor: "#000",
+      shadowOffset: {
+        width: withSpring(isActive.value ? 2 : 0),
+        height: withSpring(isActive.value ? 2 : 0),
+      },
+      shadowOpacity: withSpring(isActive.value ? 0.25 : 0),
+      shadowRadius: withSpring(isActive.value ? 3 : 0),
+
+      elevation: withSpring(isActive.value ? 5 : 0),
+
+      transform: [
+        { translateX: position.x.value },
+        { translateY: position.y.value },
+      ],
+    };
+  });
 
   return (
-    <PanGestureHandler {...panGesture.gestureHandler}>
-      <Reanimated.View
-        style={[
-          styles.widgetPosition,
-          {
-            opacity: panGesture.state.interpolate({
-              inputRange: [State.UNDETERMINED, State.ACTIVE, State.END],
-              outputRange: [1, 0.5, 1],
-            }),
-            transform: [{ translateX: position.x }, { translateY: position.y }],
-          },
-        ]}
-      >
+    <PanGestureHandler onGestureEvent={panGestureHandler}>
+      <Reanimated.View style={[styles.widgetPosition, style]}>
         {children}
       </Reanimated.View>
     </PanGestureHandler>

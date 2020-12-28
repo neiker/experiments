@@ -1,7 +1,10 @@
 import React from "react";
 import { Text } from "react-native";
-import Reanimated from "react-native-reanimated";
-import { useVector } from "react-native-redash";
+import Reanimated, {
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
+import * as redash from "react-native-redash";
 
 import { Draggable } from "./Draggable";
 import { Selecteable } from "./Selecteable";
@@ -16,25 +19,23 @@ export interface Widget {
     color: string;
     text: string;
   };
-  selected: boolean;
+  selected?: boolean;
 }
 
 export const WidgetComponent: React.FC<{
   widget: Widget;
   onUpdate: (widget: Widget) => void;
 }> = ({ widget, onUpdate }) => {
-  const position = useVector(widget.x, widget.y);
-  const size = useVector(widget.width, widget.height);
+  const position = redash.useVector(widget.x, widget.y);
+  const size = redash.useVector(widget.width, widget.height);
+  const selected = useSharedValue<boolean>(widget.selected === true);
 
   const onDragEnd = ({ x, y }: { x: number; y: number }) => {
-    // TODO
-    // eslint-disable-next-line no-console
-    console.log({ x, y });
-    // onUpdate({
-    //   ...widget,
-    //   x,
-    //   y,
-    // });
+    onUpdate({
+      ...widget,
+      x,
+      y,
+    });
   };
 
   const onResizeEnd = ({
@@ -58,23 +59,32 @@ export const WidgetComponent: React.FC<{
     });
   };
 
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      width: size.x.value,
+      height: size.y.value,
+    };
+  });
+
   return (
     <Draggable position={position} size={size} onDragEnd={onDragEnd}>
       <Selecteable
         size={size}
         onResizeEnd={onResizeEnd}
-        selected={widget.selected}
+        selected={selected}
         onPress={onPressSelect}
       >
         <Reanimated.View
-          style={{
-            padding: 10,
-            justifyContent: "center",
-            alignContent: "center",
-            width: size.x,
-            height: size.y,
-            backgroundColor: widget.properties.color,
-          }}
+          style={[
+            {
+              padding: 10,
+              justifyContent: "center",
+              alignContent: "center",
+
+              backgroundColor: widget.properties.color,
+            },
+            animatedStyle,
+          ]}
         >
           <Text style={{ textAlign: "center" }}>{widget.properties.text}</Text>
         </Reanimated.View>
