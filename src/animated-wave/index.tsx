@@ -31,14 +31,16 @@ const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 const AnimatedWave: React.FC<{ paths: string[] }> = ({ paths }) => {
   const progress = useSharedValue(0);
-  progress.value = withRepeat(
-    withTiming(1, {
-      duration: 5000,
-      easing: Easing.inOut(Easing.linear),
-    }),
-    -1, // Infinite
-    true // Boomerang
-  );
+  React.useEffect(() => {
+    progress.value = withRepeat(
+      withTiming(1, {
+        duration: 5000,
+        easing: Easing.inOut(Easing.linear),
+      }),
+      -1, // Infinite
+      true // Boomerang
+    );
+  }, [progress]);
 
   // parse function cannot run on the UI thread.
   const pathsParsed = paths.map(redash.parse);
