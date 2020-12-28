@@ -1,7 +1,7 @@
 import React from "react";
 import { Text } from "react-native";
-import Reanimated from "react-native-reanimated";
-import { useVector } from "react-native-redash/src/v1";
+import Reanimated, { useAnimatedStyle } from "react-native-reanimated";
+import { useVector } from "react-native-redash";
 
 import { Draggable } from "./Draggable";
 import { Selecteable } from "./Selecteable";
@@ -16,7 +16,7 @@ export interface Widget {
     color: string;
     text: string;
   };
-  selected: boolean;
+  selected?: boolean;
 }
 
 export const WidgetComponent: React.FC<{
@@ -27,14 +27,11 @@ export const WidgetComponent: React.FC<{
   const size = useVector(widget.width, widget.height);
 
   const onDragEnd = ({ x, y }: { x: number; y: number }) => {
-    // TODO
-    // eslint-disable-next-line no-console
-    console.log({ x, y });
-    // onUpdate({
-    //   ...widget,
-    //   x,
-    //   y,
-    // });
+    onUpdate({
+      ...widget,
+      x,
+      y,
+    });
   };
 
   const onResizeEnd = ({
@@ -58,6 +55,13 @@ export const WidgetComponent: React.FC<{
     });
   };
 
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      width: size.x.value,
+      height: size.y.value,
+    };
+  });
+
   return (
     <Draggable position={position} size={size} onDragEnd={onDragEnd}>
       <Selecteable
@@ -67,14 +71,16 @@ export const WidgetComponent: React.FC<{
         onPress={onPressSelect}
       >
         <Reanimated.View
-          style={{
-            padding: 10,
-            justifyContent: "center",
-            alignContent: "center",
-            width: size.x,
-            height: size.y,
-            backgroundColor: widget.properties.color,
-          }}
+          style={[
+            {
+              padding: 10,
+              justifyContent: "center",
+              alignContent: "center",
+
+              backgroundColor: widget.properties.color,
+            },
+            animatedStyle,
+          ]}
         >
           <Text style={{ textAlign: "center" }}>{widget.properties.text}</Text>
         </Reanimated.View>
