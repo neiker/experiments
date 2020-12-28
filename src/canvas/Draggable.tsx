@@ -13,8 +13,7 @@ import Reanimated, {
 } from "react-native-reanimated";
 import { Dimensions, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
-const windowSize = Dimensions.get("window");
+import { useHeaderHeight } from "@react-navigation/stack";
 
 const styles = StyleSheet.create({
   widgetPosition: {
@@ -29,16 +28,28 @@ const clamp = (value: number, lowerBound: number, upperBound: number) => {
   return Math.min(Math.max(lowerBound, value), upperBound);
 };
 
+function useScreenAvailableSize() {
+  const headerHeight = useHeaderHeight();
+  const insets = useSafeAreaInsets();
+  const windowSize = Dimensions.get("window");
+
+  return {
+    height: windowSize.height - headerHeight - insets.bottom,
+    width: windowSize.width,
+  };
+}
+
 export const Draggable: React.FC<{
   position: Vector<Reanimated.SharedValue<number>>;
   size: Vector<Reanimated.SharedValue<number>>;
 
   onDragEnd: (position: { x: number; y: number }) => void;
 }> = ({ children, position, size, onDragEnd }) => {
-  const insets = useSafeAreaInsets();
   const isActive = useSharedValue(false);
 
-  const gestureHandler = useAnimatedGestureHandler<
+  const screenAvailableSize = useScreenAvailableSize();
+
+  const panGestureHandler = useAnimatedGestureHandler<
     PanGestureHandlerGestureEvent,
     { offsetX: number; offsetY: number }
   >({
@@ -52,15 +63,16 @@ export const Draggable: React.FC<{
       position.x.value = clamp(
         event.translationX + ctx.offsetX,
         0,
-        windowSize.width - size.x.value
+        screenAvailableSize.width - size.x.value
       );
 
       position.y.value = clamp(
         event.translationY + ctx.offsetY,
         0,
-        windowSize.height - (62 + insets.bottom) - size.y.value
+        screenAvailableSize.height - size.y.value
       );
     },
+
     onEnd: () => {
       isActive.value = false;
 
@@ -88,7 +100,7 @@ export const Draggable: React.FC<{
   });
 
   return (
-    <PanGestureHandler onGestureEvent={gestureHandler}>
+    <PanGestureHandler onGestureEvent={panGestureHandler}>
       <Reanimated.View style={[styles.widgetPosition, style]}>
         {children}
       </Reanimated.View>

@@ -1,6 +1,9 @@
 import React from "react";
 import { Text } from "react-native";
-import Reanimated, { useAnimatedStyle } from "react-native-reanimated";
+import Reanimated, {
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
 import { useVector } from "react-native-redash";
 
 import { Draggable } from "./Draggable";
@@ -25,6 +28,7 @@ export const WidgetComponent: React.FC<{
 }> = ({ widget, onUpdate }) => {
   const position = useVector(widget.x, widget.y);
   const size = useVector(widget.width, widget.height);
+  const selected = useSharedValue<boolean>(widget.selected === true);
 
   const onDragEnd = ({ x, y }: { x: number; y: number }) => {
     onUpdate({
@@ -67,7 +71,7 @@ export const WidgetComponent: React.FC<{
       <Selecteable
         size={size}
         onResizeEnd={onResizeEnd}
-        selected={widget.selected}
+        selected={selected}
         onPress={onPressSelect}
       >
         <Reanimated.View

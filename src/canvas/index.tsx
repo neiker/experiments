@@ -91,8 +91,8 @@ export const Canvas: React.FC = () => {
 
   return (
     <TapGestureHandler
-      onHandlerStateChange={(ev) => {
-        if (ev.nativeEvent.state === State.ACTIVE) {
+      onHandlerStateChange={({ nativeEvent }) => {
+        if (nativeEvent.state === State.ACTIVE) {
           resetSelection();
         }
       }}

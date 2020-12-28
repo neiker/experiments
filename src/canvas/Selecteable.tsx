@@ -48,6 +48,7 @@ const ResizeHandler: React.FC<{
     >
       <PanGestureHandler onGestureEvent={gestureHandler}>
         <Reanimated.View
+          hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
           style={{
             width: 10,
             height: 10,
@@ -65,7 +66,7 @@ const ResizeHandler: React.FC<{
 
 export const Selecteable: React.FC<{
   size: Vector<Reanimated.SharedValue<number>>;
-  selected?: boolean;
+  selected: Reanimated.SharedValue<boolean>;
   onResizeEnd: (size: { width: number; height: number }) => void;
   onPress: () => void;
 }> = ({ children, size, selected, onResizeEnd, onPress }) => {
@@ -78,7 +79,7 @@ export const Selecteable: React.FC<{
       }}
     >
       <View>
-        {selected && <ResizeHandler {...{ size, onResizeEnd }} />}
+        {selected.value && <ResizeHandler {...{ size, onResizeEnd }} />}
         {children}
       </View>
     </TapGestureHandler>

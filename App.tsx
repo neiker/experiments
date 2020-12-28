@@ -24,7 +24,14 @@ type Screen = {
 
 const screens: Screen[] = [
   { name: "List ", component: List, title: "Sorted list" },
-  { name: "Canvas ", component: Canvas, title: "Draggable stickies" },
+  {
+    name: "Canvas ",
+    component: Canvas,
+    title: "Draggable stickies",
+    screenOptions: {
+      gestureEnabled: false,
+    },
+  },
   {
     name: "TwitterHeader ",
     component: TwitterHeader,
@@ -69,6 +76,7 @@ const App = () => (
           shadowRadius: 0,
           shadowOffset: {
             height: 0,
+            width: 0,
           },
           elevation: 0,
         },
