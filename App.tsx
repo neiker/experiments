@@ -52,13 +52,17 @@ function HomeScreen() {
 
   const renderItem = ({ item }: { item: Screen }) => (
     <ListItem
-      title={item.title}
       onPress={() => {
         navigate(item.name);
       }}
       bottomDivider
-      chevron
-    />
+    >
+      <ListItem.Content>
+        <ListItem.Title>{item.title}</ListItem.Title>
+      </ListItem.Content>
+
+      <ListItem.Chevron />
+    </ListItem>
   );
   const keyExtractor = (_: Screen, index: number) => index.toString();
 

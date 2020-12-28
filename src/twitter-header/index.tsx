@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { createStackNavigator, useHeaderHeight } from "@react-navigation/stack";
 import { FlatList, Dimensions, View, Platform } from "react-native";
-import { ListItem } from "react-native-elements";
+import { Avatar, ListItem } from "react-native-elements";
 import {
   PanGestureHandler,
   NativeViewGestureHandler,
@@ -39,13 +39,20 @@ interface TweetData {
 const keyExtractor = (_: TweetData, index: number) => index.toString();
 
 const renderItem = ({ item }: { item: TweetData }) => (
-  <ListItem
-    title={item.author.name}
-    subtitle={item.content}
-    subtitleStyle={{ fontSize: 12 }}
-    leftAvatar={{ source: { uri: item.author.avatarUrl } }}
-    bottomDivider
-  />
+  <ListItem bottomDivider>
+    <Avatar
+      rounded
+      source={{
+        uri: item.author.avatarUrl,
+      }}
+    />
+    <ListItem.Content>
+      <ListItem.Title>{item.author.name}</ListItem.Title>
+      <ListItem.Subtitle style={{ fontSize: 12 }}>
+        {item.content}
+      </ListItem.Subtitle>
+    </ListItem.Content>
+  </ListItem>
 );
 
 function useScrollContext() {
