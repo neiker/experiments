@@ -10,10 +10,10 @@ import Reanimated, {
   runOnJS,
   useAnimatedGestureHandler,
 } from "react-native-reanimated";
-import { Vector, clamp } from "react-native-redash";
+import * as redash from "react-native-redash";
 
 const ResizeHandler: React.FC<{
-  size: Vector<Reanimated.SharedValue<number>>;
+  size: redash.Vector<Reanimated.SharedValue<number>>;
   onResizeEnd: (size: { width: number; height: number }) => void;
 }> = ({ size, onResizeEnd }) => {
   const gestureHandler = useAnimatedGestureHandler<
@@ -25,8 +25,16 @@ const ResizeHandler: React.FC<{
       ctx.originalHeight = size.y.value;
     },
     onActive: (event, ctx) => {
-      size.x.value = clamp(ctx.originalWidth + event.translationX, 100, 200);
-      size.y.value = clamp(ctx.originalHeight + event.translationY, 100, 200);
+      size.x.value = redash.clamp(
+        ctx.originalWidth + event.translationX,
+        100,
+        200
+      );
+      size.y.value = redash.clamp(
+        ctx.originalHeight + event.translationY,
+        100,
+        200
+      );
     },
     onEnd: () => {
       runOnJS(onResizeEnd)({ width: size.x.value, height: size.y.value });
@@ -65,7 +73,7 @@ const ResizeHandler: React.FC<{
 };
 
 export const Selecteable: React.FC<{
-  size: Vector<Reanimated.SharedValue<number>>;
+  size: redash.Vector<Reanimated.SharedValue<number>>;
   selected: Reanimated.SharedValue<boolean>;
   onResizeEnd: (size: { width: number; height: number }) => void;
   onPress: () => void;

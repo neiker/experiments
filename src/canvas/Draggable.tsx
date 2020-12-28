@@ -3,7 +3,7 @@ import {
   PanGestureHandler,
   PanGestureHandlerGestureEvent,
 } from "react-native-gesture-handler";
-import { Vector } from "react-native-redash";
+import * as redash from "react-native-redash";
 import Reanimated, {
   runOnJS,
   useAnimatedGestureHandler,
@@ -40,8 +40,8 @@ function useScreenAvailableSize() {
 }
 
 export const Draggable: React.FC<{
-  position: Vector<Reanimated.SharedValue<number>>;
-  size: Vector<Reanimated.SharedValue<number>>;
+  position: redash.Vector<Reanimated.SharedValue<number>>;
+  size: redash.Vector<Reanimated.SharedValue<number>>;
 
   onDragEnd: (position: { x: number; y: number }) => void;
 }> = ({ children, position, size, onDragEnd }) => {
