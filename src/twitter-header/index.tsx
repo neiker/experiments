@@ -51,6 +51,7 @@ export const TwitterHeaderScreen = () => {
       ctx.startY = y.value;
     },
     onActive: (event, ctx) => {
+      // TODO diffClamp
       y.value = clamp(ctx.startY + event.translationY, -topHeight, 0);
     },
     onEnd: () => {
