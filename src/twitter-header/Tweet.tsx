@@ -5,6 +5,7 @@ import { Avatar, Icon, ListItem } from "react-native-elements";
 import { colors } from "./colors";
 
 export interface TweetData {
+  id: number;
   author: {
     name: string;
     username: string;

@@ -118,7 +118,7 @@ export const TwitterHeaderScreen = () => {
               ItemSeparatorComponent={() => (
                 <Divider style={{ backgroundColor: colors.exlightGray }} />
               )}
-              keyExtractor={(_, index) => index.toString()}
+              keyExtractor={(item) => `${item.id}`}
               data={TWEETS}
               renderItem={({ item }) => {
                 return <Tweet item={item} />;
