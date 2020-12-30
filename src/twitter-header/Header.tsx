@@ -1,11 +1,13 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Icon } from "react-native-elements";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { colors } from "./colors";
+
+export const HEADER_HEIGHT = 60;
 
 export function Header() {
   const { goBack } = useNavigation();
@@ -14,14 +16,15 @@ export function Header() {
   return (
     <View
       style={{
-        paddingTop: insets.top + 15,
+        height: HEADER_HEIGHT + insets.top,
+        paddingTop: insets.top,
         paddingHorizontal: 20,
-        paddingBottom: 15,
         borderBottomColor: colors.exlightGray,
         borderBottomWidth: StyleSheet.hairlineWidth,
         backgroundColor: colors.white,
         flexDirection: "row",
         justifyContent: "space-between",
+        alignItems: "center",
       }}
     >
       <TouchableOpacity onPress={goBack}>

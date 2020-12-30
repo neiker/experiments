@@ -3,6 +3,7 @@ import { View, StyleSheet, Text } from "react-native";
 import { Avatar } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
 import faker from "faker";
+import Reanimated from "react-native-reanimated";
 
 import { colors } from "./colors";
 
@@ -64,36 +65,40 @@ const STORIES = [...Array(20)].map((_, id) => ({
   avatar: faker.image.imageUrl(50, 50, "people", true, true),
 }));
 
+interface StoriesProps {
+  translationY: Reanimated.SharedValue<number>;
+}
+
+export const STORIES_HEIGHT = 120;
+
 export function Stories() {
   return (
-    <>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        bounces={false}
-        style={{
-          backgroundColor: colors.white,
-          borderBottomColor: colors.exlightGray,
-          borderBottomWidth: StyleSheet.hairlineWidth,
-        }}
-        contentContainerStyle={{
-          paddingVertical: 20,
-          paddingHorizontal: 10,
-          alignItems: "center",
-        }}
-      >
-        <Story
-          me
-          avatar={faker.image.imageUrl(50, 50, "people", true, true)}
-          title="Add"
-        />
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      bounces={false}
+      style={{
+        height: STORIES_HEIGHT,
+        backgroundColor: colors.white,
+        borderBottomColor: colors.exlightGray,
+        borderBottomWidth: StyleSheet.hairlineWidth,
+      }}
+      contentContainerStyle={{
+        paddingHorizontal: 10,
+        alignItems: "center",
+      }}
+    >
+      <Story
+        me
+        avatar={faker.image.imageUrl(50, 50, "people", true, true)}
+        title="Add"
+      />
 
-        {STORIES.map((item) => {
-          return (
-            <Story key={item.id} avatar={item.avatar} title={item.username} />
-          );
-        })}
-      </ScrollView>
-    </>
+      {STORIES.map((item) => {
+        return (
+          <Story key={item.id} avatar={item.avatar} title={item.username} />
+        );
+      })}
+    </ScrollView>
   );
 }
