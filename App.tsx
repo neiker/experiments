@@ -10,7 +10,7 @@ import { FlatList } from "react-native-gesture-handler";
 
 import { List } from "./src/list";
 import { Canvas } from "./src/canvas";
-import { TwitterHeader } from "./src/twitter-header";
+import { TwitterHeaderScreen } from "./src/twitter-header";
 import { AnimatedWaveScreen } from "./src/animated-wave";
 
 const Stack = createStackNavigator();
@@ -28,13 +28,10 @@ const screens: Screen[] = [
     name: "Canvas ",
     component: Canvas,
     title: "Draggable stickies",
-    screenOptions: {
-      gestureEnabled: false,
-    },
   },
   {
     name: "TwitterHeader ",
-    component: TwitterHeader,
+    component: TwitterHeaderScreen,
     title: "Twitter Header",
     screenOptions: {
       headerShown: false,
@@ -75,6 +72,7 @@ const App = () => (
     <Stack.Navigator
       headerMode="screen"
       screenOptions={{
+        gestureEnabled: false,
         headerStyle: {
           backgroundColor: "#2089dc",
           shadowRadius: 0,
