@@ -11,9 +11,10 @@ import Reanimated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { Dimensions, StyleSheet } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useHeaderHeight } from "@react-navigation/stack";
+import { StyleSheet } from "react-native";
+import { clamp } from "react-native-redash";
+
+import { useScreenAvailableSize } from "../utils/useScreenAvailableSize";
 
 const styles = StyleSheet.create({
   widgetPosition: {
@@ -22,22 +23,6 @@ const styles = StyleSheet.create({
     left: 0,
   },
 });
-
-const clamp = (value: number, lowerBound: number, upperBound: number) => {
-  "worklet";
-  return Math.min(Math.max(lowerBound, value), upperBound);
-};
-
-function useScreenAvailableSize() {
-  const headerHeight = useHeaderHeight();
-  const insets = useSafeAreaInsets();
-  const windowSize = Dimensions.get("window");
-
-  return {
-    height: windowSize.height - headerHeight - insets.bottom,
-    width: windowSize.width,
-  };
-}
 
 export const Draggable: React.FC<{
   position: redash.Vector<Reanimated.SharedValue<number>>;

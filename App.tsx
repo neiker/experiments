@@ -12,6 +12,7 @@ import { List } from "./src/list";
 import { Canvas } from "./src/canvas";
 import { TwitterHeaderScreen } from "./src/twitter-header";
 import { AnimatedWaveScreen } from "./src/animated-wave";
+import { MagnetScreen } from "./src/MagnetScreen";
 
 const Stack = createStackNavigator();
 
@@ -41,6 +42,12 @@ const screens: Screen[] = [
     name: "AnimatedWave ",
     component: AnimatedWaveScreen,
     title: "Animated Wave",
+  },
+
+  {
+    name: "Magnet",
+    component: MagnetScreen,
+    title: "Magnet",
   },
 ];
 
