@@ -1,16 +1,19 @@
 # Experiments on this project
 
 ## Sorted List (WIP)
-Drag&drop items on a list while you keep the posibility of scroll over the elements.
+Drag~~&drop~~ items on a list while you keep the posibility of scroll over the elements.
 
 ## Draggable Stickies 
-Sticky notes you can drag&drop and also resize. All happening on the UI thread.
+Sticky notes you can drag&drop and also resize. 
 
 ## Twitter Header
 Pseudo-sticky header. It disappears when you scroll down and appears again as soon as you scroll up. 
 
 ## Animated Wave
 Just an animated SVG.
+
+## Magnet
+A box that sticks to the borders if is leave too close to them.
 
 # Debug
 
