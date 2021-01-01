@@ -1,7 +1,7 @@
 # Experiments on this project
 
 ## Sorted List (WIP)
-Drag~~&drop~~ items on a list while you keep the posibility of scroll over the elements.
+Drag<strike>&drop</strike> items on a list while you keep the posibility of scroll over the elements.
 
 ## Draggable Stickies 
 Sticky notes you can drag&drop and also resize. 
