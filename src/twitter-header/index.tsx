@@ -39,44 +39,57 @@ export const TwitterHeaderScreen = () => {
   const listRef = React.useRef<NativeViewGestureHandler>(null);
   const panRef = React.useRef<PanGestureHandler>(null);
 
-  const topHeight = STORIES_HEIGHT + HEADER_HEIGHT + insets.top;
+  const headerHeightWithInset = HEADER_HEIGHT + insets.top;
+  const topHeight = STORIES_HEIGHT + headerHeightWithInset;
 
-  const y = useSharedValue(0);
+  const headerTranslateY = useSharedValue(0);
+  const storiesTranslateY = useSharedValue(0);
 
+  // Why use a pan gesture instead of onScroll event?
+  // Because we are translating the ScrollView and
+  // it will give us false movements because of this.
   const gestureHandler = useAnimatedGestureHandler<
     PanGestureHandlerGestureEvent,
-    { startY: number }
+    { prevY: number }
   >({
     onStart: (_, ctx) => {
-      ctx.startY = y.value;
+      ctx.prevY = 0;
     },
     onActive: (event, ctx) => {
-      // TODO diffClamp
-      y.value = clamp(ctx.startY + event.translationY, -topHeight, 0);
+      const diff = event.translationY - ctx.prevY;
+
+      headerTranslateY.value = clamp(
+        headerTranslateY.value + diff,
+        -headerHeightWithInset,
+        0
+      );
+      storiesTranslateY.value = clamp(
+        storiesTranslateY.value + diff,
+        -topHeight,
+        0
+      );
+
+      ctx.prevY = event.translationY;
     },
     onEnd: () => {
       // TODO add withDecay for a nice deceleration
     },
   });
 
-  const headerAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateY: y.value }],
-    };
-  });
-
   const listWrapperStyle = useAnimatedStyle(() => {
     // The header and stories are absolutely positioned so the
     // list needs a paddingTop to compensate it.
     // This should be done outise scrollable to keep consitency on scrollbar
-    return { paddingTop: topHeight + y.value };
+    return {
+      marginTop: topHeight + headerTranslateY.value + storiesTranslateY.value,
+    };
   });
 
   const cancelScrollViewStyle = useAnimatedStyle(() => {
     // on iOS we cancel the translation on the scroll while header is hiding
     if (Platform.OS === "ios") {
       return {
-        height: Math.max(-y.value, 0),
+        height: Math.abs(storiesTranslateY.value + headerTranslateY.value),
       };
     }
 
@@ -90,22 +103,12 @@ export const TwitterHeaderScreen = () => {
       onGestureEvent={gestureHandler}
     >
       <Reanimated.View style={{ backgroundColor: colors.white }}>
-        <Reanimated.View
-          style={[
-            headerAnimatedStyle,
-            {
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              zIndex: 2,
-            },
-          ]}
-        >
-          <Header />
+        <Header translateY={headerTranslateY} />
 
-          <Stories />
-        </Reanimated.View>
+        <Stories
+          translateY={storiesTranslateY}
+          offsetY={headerHeightWithInset}
+        />
 
         <Reanimated.View style={listWrapperStyle}>
           <NativeViewGestureHandler ref={listRef} simultaneousHandlers={panRef}>

@@ -3,7 +3,7 @@ import { View, StyleSheet, Text } from "react-native";
 import { Avatar } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
 import faker from "faker";
-import Reanimated from "react-native-reanimated";
+import Reanimated, { useAnimatedStyle } from "react-native-reanimated";
 
 import { colors } from "./colors";
 
@@ -59,6 +59,8 @@ function Story({
   );
 }
 
+export const STORIES_HEIGHT = 120;
+
 const STORIES = [...Array(20)].map((_, id) => ({
   id,
   username: faker.internet.userName(),
@@ -66,39 +68,57 @@ const STORIES = [...Array(20)].map((_, id) => ({
 }));
 
 interface StoriesProps {
-  translationY: Reanimated.SharedValue<number>;
+  translateY: Reanimated.SharedValue<number>;
+  offsetY: number;
 }
 
-export const STORIES_HEIGHT = 120;
+export function Stories({ translateY, offsetY }: StoriesProps) {
+  const headerAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: translateY.value + offsetY }],
+    };
+  });
 
-export function Stories() {
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      bounces={false}
-      style={{
-        height: STORIES_HEIGHT,
-        backgroundColor: colors.white,
-        borderBottomColor: colors.exlightGray,
-        borderBottomWidth: StyleSheet.hairlineWidth,
-      }}
-      contentContainerStyle={{
-        paddingHorizontal: 10,
-        alignItems: "center",
-      }}
+    <Reanimated.View
+      style={[
+        headerAnimatedStyle,
+        {
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 1,
+        },
+      ]}
     >
-      <Story
-        me
-        avatar={faker.image.imageUrl(50, 50, "people", true, true)}
-        title="Add"
-      />
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        bounces={false}
+        style={{
+          height: STORIES_HEIGHT,
+          backgroundColor: colors.white,
+          borderBottomColor: colors.exlightGray,
+          borderBottomWidth: StyleSheet.hairlineWidth,
+        }}
+        contentContainerStyle={{
+          paddingHorizontal: 10,
+          alignItems: "center",
+        }}
+      >
+        <Story
+          me
+          avatar={faker.image.imageUrl(50, 50, "people", true, true)}
+          title="Add"
+        />
 
-      {STORIES.map((item) => {
-        return (
-          <Story key={item.id} avatar={item.avatar} title={item.username} />
-        );
-      })}
-    </ScrollView>
+        {STORIES.map((item) => {
+          return (
+            <Story key={item.id} avatar={item.avatar} title={item.username} />
+          );
+        })}
+      </ScrollView>
+    </Reanimated.View>
   );
 }
