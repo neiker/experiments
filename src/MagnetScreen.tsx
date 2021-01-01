@@ -10,6 +10,7 @@ import Reanimated, {
   withTiming,
   Easing,
   useDerivedValue,
+  useSharedValue,
 } from "react-native-reanimated";
 import { ReText, useVector, clamp } from "react-native-redash";
 
@@ -28,22 +29,32 @@ function withEaseInCubic(toValue: number) {
 export function MagnetScreen() {
   const screenSize = useScreenAvailableSize();
 
-  const position = useVector(0, 0);
+  const maxX = screenSize.width - BOX_SIZE;
+  const maxY = screenSize.height - BOX_SIZE;
+  const proximity = BOX_SIZE;
+
+  const position = useVector(maxX / 2, maxY / 2);
+  const stickLeft = useSharedValue(false);
+  const stickTop = useSharedValue(false);
+  const stickRight = useSharedValue(false);
+  const stickBottom = useSharedValue(false);
 
   const boxStyle = useAnimatedStyle(() => {
     return {
       width: BOX_SIZE,
       height: BOX_SIZE,
-      backgroundColor: "#ff569a",
+      backgroundColor: "white",
       transform: [
         { translateX: position.x.value },
         { translateY: position.y.value },
       ],
+      borderWidth: 2,
+      borderLeftColor: stickLeft.value ? "red" : "transparent",
+      borderTopColor: stickTop.value ? "red" : "transparent",
+      borderRightColor: stickRight.value ? "red" : "transparent",
+      borderBottomColor: stickBottom.value ? "red" : "transparent",
     };
   });
-
-  const maxX = screenSize.width - BOX_SIZE;
-  const maxY = screenSize.height - BOX_SIZE;
 
   const panHandler = useAnimatedGestureHandler<
     PanGestureHandlerGestureEvent,
@@ -56,17 +67,23 @@ export function MagnetScreen() {
     onActive: (event, context) => {
       position.x.value = clamp(context.offsetX + event.translationX, 0, maxX);
       position.y.value = clamp(context.offsetY + event.translationY, 0, maxY);
+
+      stickLeft.value = position.x.value < proximity;
+      stickRight.value = position.x.value > maxX - proximity;
+
+      stickTop.value = position.y.value < proximity;
+      stickBottom.value = position.y.value > maxY - proximity;
     },
     onEnd: () => {
-      if (position.x.value - BOX_SIZE < 0) {
+      if (stickLeft.value) {
         position.x.value = withEaseInCubic(0);
-      } else if (position.x.value + BOX_SIZE > maxX) {
+      } else if (stickRight.value) {
         position.x.value = withEaseInCubic(maxX);
       }
 
-      if (position.y.value < BOX_SIZE) {
+      if (stickTop.value) {
         position.y.value = withEaseInCubic(0);
-      } else if (position.y.value > maxY - BOX_SIZE) {
+      } else if (stickBottom.value) {
         position.y.value = withEaseInCubic(maxY);
       }
     },
@@ -79,7 +96,7 @@ export function MagnetScreen() {
   return (
     <View
       style={{
-        backgroundColor: "#effccb",
+        backgroundColor: "gray",
         width: screenSize.width,
         height: screenSize.height,
       }}
@@ -90,7 +107,7 @@ export function MagnetScreen() {
         >
           <ReText
             text={coordinates}
-            style={{ color: "#222", fontVariant: ["tabular-nums"] }}
+            style={{ color: "gray", fontVariant: ["tabular-nums"] }}
           />
         </Reanimated.View>
       </PanGestureHandler>
