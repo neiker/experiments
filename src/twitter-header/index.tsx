@@ -12,7 +12,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Divider } from "react-native-elements";
 import faker from "faker";
-import { FlatList, Platform } from "react-native";
+import { FlatList, Platform, StatusBar } from "react-native";
 import { clamp } from "react-native-redash";
 
 import { Stories, STORIES_HEIGHT } from "./Stories";
@@ -97,41 +97,47 @@ export const TwitterHeaderScreen = () => {
   });
 
   return (
-    <PanGestureHandler
-      ref={panRef}
-      simultaneousHandlers={listRef}
-      onGestureEvent={gestureHandler}
-    >
-      <Reanimated.View style={{ backgroundColor: colors.white }}>
-        <Header translateY={headerTranslateY} />
+    <>
+      <StatusBar barStyle="dark-content" />
+      <PanGestureHandler
+        ref={panRef}
+        simultaneousHandlers={listRef}
+        onGestureEvent={gestureHandler}
+      >
+        <Reanimated.View style={{ backgroundColor: colors.white }}>
+          <Header translateY={headerTranslateY} />
 
-        <Stories
-          translateY={storiesTranslateY}
-          offsetY={headerHeightWithInset}
-        />
+          <Stories
+            translateY={storiesTranslateY}
+            offsetY={headerHeightWithInset}
+          />
 
-        <Reanimated.View style={listWrapperStyle}>
-          <NativeViewGestureHandler ref={listRef} simultaneousHandlers={panRef}>
-            <FlatList
-              snapToInterval={1}
-              ListHeaderComponent={() => (
-                <Reanimated.View style={cancelScrollViewStyle} />
-              )}
-              contentContainerStyle={{ paddingBottom: insets.bottom }}
-              ItemSeparatorComponent={() => (
-                <Divider style={{ backgroundColor: colors.exlightGray }} />
-              )}
-              keyExtractor={(item) => `${item.id}`}
-              data={TWEETS}
-              renderItem={({ item }) => {
-                return <Tweet item={item} />;
-              }}
-              bounces={false}
-              decelerationRate={0.9}
-            />
-          </NativeViewGestureHandler>
+          <Reanimated.View style={listWrapperStyle}>
+            <NativeViewGestureHandler
+              ref={listRef}
+              simultaneousHandlers={panRef}
+            >
+              <FlatList
+                snapToInterval={1}
+                ListHeaderComponent={() => (
+                  <Reanimated.View style={cancelScrollViewStyle} />
+                )}
+                contentContainerStyle={{ paddingBottom: insets.bottom }}
+                ItemSeparatorComponent={() => (
+                  <Divider style={{ backgroundColor: colors.exlightGray }} />
+                )}
+                keyExtractor={(item) => `${item.id}`}
+                data={TWEETS}
+                renderItem={({ item }) => {
+                  return <Tweet item={item} />;
+                }}
+                bounces={false}
+                decelerationRate={0.9}
+              />
+            </NativeViewGestureHandler>
+          </Reanimated.View>
         </Reanimated.View>
-      </Reanimated.View>
-    </PanGestureHandler>
+      </PanGestureHandler>
+    </>
   );
 };
