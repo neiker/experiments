@@ -41,7 +41,9 @@ export async function getAlbumsWithPhotos(): Promise<AlbumWithPhotos[]> {
       "https://jsonplaceholder.typicode.com/photos"
     );
 
-    return albums.map((album) => {
+    // react-native-expo-image-cache have issues with
+    // too many images so we only use 10 albums
+    return albums.slice(0, 10).map((album) => {
       let albumPhotos = photos.filter((photo) => photo.albumId === album.id);
 
       // All albums from jsonplaceholder have 50 images. Let's randomize it!

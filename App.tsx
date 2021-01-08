@@ -1,5 +1,5 @@
 import React from "react";
-import { StatusBar } from "react-native";
+import { LogBox, StatusBar } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import {
   createStackNavigator,
@@ -14,6 +14,8 @@ import { TwitterHeaderScreen } from "./src/twitter-header";
 import { AnimatedWaveScreen } from "./src/animated-wave";
 import { MagnetScreen } from "./src/MagnetScreen";
 import { PhotosNavigator } from "./src/photos";
+
+LogBox.ignoreLogs(["Setting a timer"]);
 
 const Stack = createStackNavigator();
 

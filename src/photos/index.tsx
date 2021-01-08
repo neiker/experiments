@@ -1,4 +1,5 @@
 import React from "react";
+import { Icon } from "react-native-elements";
 import { createSharedElementStackNavigator } from "react-navigation-shared-element";
 import { QueryClient, QueryClientProvider } from "react-query";
 
@@ -11,6 +12,12 @@ const Stack = createSharedElementStackNavigator<PhotosStackProps>();
 
 const queryClient = new QueryClient();
 
+function StackHeaderBackIcon() {
+  return (
+    <Icon name="arrow-back" color="#eee" size={26} style={{ marginLeft: 5 }} />
+  );
+}
+
 export function PhotosNavigator() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -18,6 +25,7 @@ export function PhotosNavigator() {
         mode="modal"
         screenOptions={{
           headerBackTitleVisible: false,
+          headerBackImage: StackHeaderBackIcon,
           headerStyle: {
             backgroundColor: "black",
             // remove shadow on Android
@@ -54,9 +62,9 @@ export function PhotosNavigator() {
         <Stack.Screen
           name="Photo"
           component={PhotoScreen}
-          options={({ route }) => ({
-            title: route.params.photo.title,
-          })}
+          options={{
+            title: "",
+          }}
           sharedElementsConfig={(route) => {
             const photo = route.params.photo as Photo;
 
