@@ -51,9 +51,9 @@ const screens: Screen[] = [
     title: "Magnet",
   },
   {
-    name: "Photos",
+    name: "Photo Albums",
     component: PhotosNavigator,
-    title: "Photos",
+    title: "Photo Albums",
     screenOptions: {
       headerShown: false,
     },

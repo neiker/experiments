@@ -1,6 +1,7 @@
 import { RouteProp } from "@react-navigation/native";
 import React from "react";
-import { Image, useWindowDimensions } from "react-native";
+import { useWindowDimensions } from "react-native";
+import { Image } from "react-native-expo-image-cache";
 
 import { PhotosStackProps } from "../types";
 
@@ -13,7 +14,7 @@ export function PhotoScreen({ route }: PhotoScreenProps) {
 
   return (
     <Image
-      source={{ uri: route.params.photo.url }}
+      uri={route.params.photo.url}
       style={{
         width: windowDimensions.width,
         height: windowDimensions.width,

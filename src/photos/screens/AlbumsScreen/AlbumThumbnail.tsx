@@ -1,6 +1,7 @@
 import React from "react";
-import { Image, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { Image } from "react-native-expo-image-cache";
 
 import { AlbumWithPhotos } from "../../types";
 
@@ -20,11 +21,7 @@ export function AlbumThumbnail({ size, album, onPress }: AlbumThumbnailProps) {
     <TouchableOpacity onPress={onPress}>
       <View style={{ width: size }}>
         <Image
-          source={{
-            uri: album.photos[0].thumbnailUrl,
-            // TODO use react-native-expo-cached-image
-            cache: "force-cache",
-          }}
+          uri={album.photos[0].thumbnailUrl}
           style={{
             width: size,
             height: size - smallThumbSize,
@@ -35,7 +32,7 @@ export function AlbumThumbnail({ size, album, onPress }: AlbumThumbnailProps) {
           {album.photos.slice(1, 4).map((photo) => (
             <Image
               key={photo.id}
-              source={{ uri: photo.thumbnailUrl, cache: "force-cache" }}
+              uri={photo.thumbnailUrl}
               style={{
                 width: smallThumbSize,
                 height: smallThumbSize,
