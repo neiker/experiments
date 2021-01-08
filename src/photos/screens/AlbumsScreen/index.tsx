@@ -1,38 +1,13 @@
 import { NavigationProp } from "@react-navigation/native";
 import React from "react";
-import {
-  ActivityIndicator,
-  useWindowDimensions,
-  View,
-  Image,
-} from "react-native";
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
+import { ActivityIndicator, useWindowDimensions, View } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery } from "react-query";
 
-import { Album, AlbumWithPhotos, Photo, PhotosStackProps } from "../types";
+import { Album, AlbumWithPhotos, Photo, PhotosStackProps } from "../../types";
 
-interface AlbumThumbnailProps {
-  size: number;
-  album: AlbumWithPhotos;
-  onPress: () => void;
-}
-
-function AlbumThumbnail({ size, album, onPress }: AlbumThumbnailProps) {
-  return (
-    <TouchableOpacity onPress={onPress}>
-      <Image
-        source={{
-          uri: album.photos[0].thumbnailUrl,
-        }}
-        style={{
-          width: size,
-          height: size,
-        }}
-      />
-    </TouchableOpacity>
-  );
-}
+import { AlbumThumbnail } from "./AlbumThumbnail";
 
 async function get<T>(url: string): Promise<T> {
   const res = await fetch(url);
