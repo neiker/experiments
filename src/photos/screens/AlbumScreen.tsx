@@ -4,6 +4,7 @@ import { useWindowDimensions } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Image } from "react-native-expo-image-cache";
+import { SharedElement } from "react-navigation-shared-element";
 
 import { PhotosStackProps } from "../types";
 
@@ -27,21 +28,28 @@ export function AlbumScreen({ route, navigation }: AlbumScreenProps) {
       }}
       data={route.params.album.photos}
       keyExtractor={(photo) => `${photo.id}`}
-      renderItem={({ item: photo }) => (
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("Photo", { photo });
-          }}
-        >
-          <Image
-            style={{
-              width: imageSize,
-              height: imageSize,
+      renderItem={({ item: photo }) => {
+        const style = {
+          width: imageSize,
+          height: imageSize,
+        };
+
+        return (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("Photo", { photo });
             }}
-            uri={photo.url}
-          />
-        </TouchableOpacity>
-      )}
+          >
+            <SharedElement id={`item.${photo.id}.photo`} style={style}>
+              <Image
+                style={style}
+                uri={photo.url}
+                preview={{ uri: photo.thumbnailUrl }}
+              />
+            </SharedElement>
+          </TouchableOpacity>
+        );
+      }}
     />
   );
 }

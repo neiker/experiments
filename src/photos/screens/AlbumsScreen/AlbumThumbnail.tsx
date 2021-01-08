@@ -2,6 +2,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Image } from "react-native-expo-image-cache";
+import { SharedElement } from "react-navigation-shared-element";
 
 import { AlbumWithPhotos } from "../../types";
 
@@ -20,24 +21,27 @@ export function AlbumThumbnail({ size, album, onPress }: AlbumThumbnailProps) {
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={{ width: size }}>
-        <Image
-          uri={album.photos[0].thumbnailUrl}
-          style={{
-            width: size,
-            height: size - smallThumbSize,
-          }}
-        />
+        <SharedElement id={`item.${album.photos[0].id}.photo`}>
+          <Image
+            uri={album.photos[0].thumbnailUrl}
+            style={{
+              width: size,
+              height: size - smallThumbSize,
+            }}
+          />
+        </SharedElement>
 
         <View style={{ flexDirection: "row" }}>
           {album.photos.slice(1, 4).map((photo) => (
-            <Image
-              key={photo.id}
-              uri={photo.thumbnailUrl}
-              style={{
-                width: smallThumbSize,
-                height: smallThumbSize,
-              }}
-            />
+            <SharedElement key={photo.id} id={`item.${photo.id}.photo`}>
+              <Image
+                uri={photo.thumbnailUrl}
+                style={{
+                  width: smallThumbSize,
+                  height: smallThumbSize,
+                }}
+              />
+            </SharedElement>
           ))}
 
           <View

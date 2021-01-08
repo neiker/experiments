@@ -1,13 +1,13 @@
-import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
+import { createSharedElementStackNavigator } from "react-navigation-shared-element";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import { AlbumScreen } from "./screens/AlbumScreen";
 import { AlbumsScreen } from "./screens/AlbumsScreen";
 import { PhotoScreen } from "./screens/PhotoScreen";
-import { PhotosStackProps } from "./types";
+import { AlbumWithPhotos, Photo, PhotosStackProps } from "./types";
 
-const Stack = createStackNavigator<PhotosStackProps>();
+const Stack = createSharedElementStackNavigator<PhotosStackProps>();
 
 const queryClient = new QueryClient();
 
@@ -15,6 +15,7 @@ export function PhotosNavigator() {
   return (
     <QueryClientProvider client={queryClient}>
       <Stack.Navigator
+        mode="modal"
         screenOptions={{
           headerBackTitleVisible: false,
           headerStyle: {
@@ -40,6 +41,15 @@ export function PhotosNavigator() {
           options={({ route }) => ({
             title: route.params.album.title,
           })}
+          sharedElementsConfig={(route, prevRoute) => {
+            if (prevRoute.name === "Albums") {
+              const album = route.params.album as AlbumWithPhotos;
+
+              return album.photos
+                .slice(0, 4)
+                .map((photo) => `item.${photo.id}.photo`);
+            }
+          }}
         />
         <Stack.Screen
           name="Photo"
@@ -47,6 +57,11 @@ export function PhotosNavigator() {
           options={({ route }) => ({
             title: route.params.photo.title,
           })}
+          sharedElementsConfig={(route) => {
+            const photo = route.params.photo as Photo;
+
+            return [`item.${photo.id}.photo`];
+          }}
         />
       </Stack.Navigator>
     </QueryClientProvider>

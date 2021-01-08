@@ -30,13 +30,8 @@ export async function get<T>(url: string): Promise<T> {
   throw new Error();
 }
 
-// Generates a random number within a range
-function generateRandomInteger(min: number, max: number) {
-  return Math.floor(min + Math.random() * (max + 1 - min));
-}
-
 export async function getAlbumsWithPhotos(): Promise<AlbumWithPhotos[]> {
-  const CACHE_KEY = "cache_for_albums_and_photos";
+  const CACHE_KEY = "cache:getAlbumsWithPhotos";
 
   return asyncMemo(CACHE_KEY, async () => {
     const albums = await get<Album[]>(
@@ -50,7 +45,10 @@ export async function getAlbumsWithPhotos(): Promise<AlbumWithPhotos[]> {
       let albumPhotos = photos.filter((photo) => photo.albumId === album.id);
 
       // All albums from jsonplaceholder have 50 images. Let's randomize it!
-      albumPhotos.length = generateRandomInteger(10, albumPhotos.length);
+      albumPhotos.length = faker.random.number({
+        min: 10,
+        max: albumPhotos.length,
+      });
 
       // Images from jsonplaceholder are squares with solid a solid color
       // So we use real photos:
