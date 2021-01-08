@@ -5,33 +5,10 @@ import { FlatList } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery } from "react-query";
 
-import { Album, AlbumWithPhotos, Photo, PhotosStackProps } from "../../types";
+import { PhotosStackProps } from "../../types";
+import { getAlbumsWithPhotos } from "../../api";
 
 import { AlbumThumbnail } from "./AlbumThumbnail";
-
-async function get<T>(url: string): Promise<T> {
-  const res = await fetch(url);
-
-  if (res.ok) {
-    return res.json();
-  }
-
-  throw new Error();
-}
-
-async function fetchAlbumsWithPhotos(): Promise<AlbumWithPhotos[]> {
-  const albums = await get<Album[]>(
-    "https://jsonplaceholder.typicode.com/albums"
-  );
-  const photos = await get<Photo[]>(
-    "https://jsonplaceholder.typicode.com/photos"
-  );
-
-  return albums.map((album) => ({
-    ...album,
-    photos: photos.filter((photo) => photo.albumId === album.id),
-  }));
-}
 
 const NUM_COLUMNS = 2;
 
@@ -42,7 +19,7 @@ export function AlbumsScreen({ navigation }: AlbumsScreenProps) {
   const insets = useSafeAreaInsets();
   const windowDimensions = useWindowDimensions();
 
-  const { data: albums, status } = useQuery("albums", fetchAlbumsWithPhotos);
+  const { data: albums, status } = useQuery("albums", getAlbumsWithPhotos);
 
   if (status === "error") {
     // TODO handle errors
