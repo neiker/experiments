@@ -13,6 +13,7 @@ import { Canvas } from "./src/canvas";
 import { TwitterHeaderScreen } from "./src/twitter-header";
 import { AnimatedWaveScreen } from "./src/animated-wave";
 import { MagnetScreen } from "./src/MagnetScreen";
+import { PhotosNavigator } from "./src/photos";
 
 const Stack = createStackNavigator();
 
@@ -48,6 +49,14 @@ const screens: Screen[] = [
     name: "Magnet",
     component: MagnetScreen,
     title: "Magnet",
+  },
+  {
+    name: "Photos",
+    component: PhotosNavigator,
+    title: "Photos",
+    screenOptions: {
+      headerShown: false,
+    },
   },
 ];
 
