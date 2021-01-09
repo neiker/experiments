@@ -37,7 +37,10 @@ export function AlbumScreen({ route, navigation }: AlbumScreenProps) {
         return (
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("Photo", { photo });
+              navigation.navigate("Photo", {
+                photos: route.params.album.photos,
+                photoId: photo.id,
+              });
             }}
           >
             <SharedElement id={`item.${photo.id}.photo`} style={style}>

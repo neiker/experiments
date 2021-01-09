@@ -22,6 +22,7 @@ export type PhotosStackProps = {
     album: AlbumWithPhotos;
   };
   Photo: {
-    photo: Photo;
+    photos: Photo[];
+    photoId: number;
   };
 };

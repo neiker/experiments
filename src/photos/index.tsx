@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { AlbumScreen } from "./screens/AlbumScreen";
 import { AlbumsScreen } from "./screens/AlbumsScreen";
 import { PhotoScreen } from "./screens/PhotoScreen";
-import { AlbumWithPhotos, Photo, PhotosStackProps } from "./types";
+import { AlbumWithPhotos, PhotosStackProps } from "./types";
 
 const Stack = createSharedElementStackNavigator<PhotosStackProps>();
 
@@ -65,10 +65,14 @@ export function PhotosNavigator() {
           options={{
             title: "",
           }}
-          sharedElementsConfig={(route) => {
-            const photo = route.params.photo as Photo;
-
-            return [`item.${photo.id}.photo`];
+          sharedElementsConfig={(route, prevRoute, showing) => {
+            // In order to perform the correct transition after scroll to a different photo
+            // we call `navigation.setParams()` with the new focused photo id to get it on
+            // `route.params.photoId`, but `react-navigation-shared-element` never updates it ¯\_(ツ)_/¯
+            // So we only do the transition on showing:
+            if (showing) {
+              return [`item.${route.params.photoId}.photo`];
+            }
           }}
         />
       </Stack.Navigator>
