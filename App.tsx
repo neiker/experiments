@@ -1,5 +1,5 @@
 import React from "react";
-import { StatusBar } from "react-native";
+import { LogBox, StatusBar } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import {
   createStackNavigator,
@@ -13,6 +13,9 @@ import { Canvas } from "./src/canvas";
 import { TwitterHeaderScreen } from "./src/twitter-header";
 import { AnimatedWaveScreen } from "./src/animated-wave";
 import { MagnetScreen } from "./src/MagnetScreen";
+import { PhotosNavigator } from "./src/photos";
+
+LogBox.ignoreLogs(["Setting a timer"]);
 
 const Stack = createStackNavigator();
 
@@ -48,6 +51,14 @@ const screens: Screen[] = [
     name: "Magnet",
     component: MagnetScreen,
     title: "Magnet",
+  },
+  {
+    name: "Photo Albums",
+    component: PhotosNavigator,
+    title: "Photo Albums",
+    screenOptions: {
+      headerShown: false,
+    },
   },
 ];
 
