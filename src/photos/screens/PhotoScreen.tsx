@@ -42,7 +42,7 @@ export function PhotoScreen({ route }: PhotoScreenProps) {
     <ScrollView
       horizontal
       snapToInterval={windowWidth}
-      decelerationRate={0}
+      decelerationRate="fast"
       ref={scrollViewRef}
     >
       {photos.map((photo) => (
