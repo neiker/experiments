@@ -12,6 +12,17 @@ import { AlbumThumbnail } from "./AlbumThumbnail";
 
 const NUM_COLUMNS = 2;
 
+function VerticalSeparator() {
+  return (
+    <View
+      style={{
+        height: 2,
+        backgroundColor: "#000",
+      }}
+    />
+  );
+}
+
 interface AlbumsScreenProps {
   navigation: NavigationProp<PhotosStackProps, "Albums">;
 }
@@ -45,19 +56,32 @@ export function AlbumsScreen({ navigation }: AlbumsScreenProps) {
     <FlatList
       numColumns={NUM_COLUMNS}
       data={albums}
-      renderItem={({ item: album }) => (
-        <AlbumThumbnail
-          size={windowDimensions.width / NUM_COLUMNS}
-          album={album}
-          onPress={() => {
-            navigation.navigate("Album", { album });
-          }}
-        />
-      )}
+      renderItem={({ item: album, index }) => {
+        const isEven = index % 2 === 0;
+
+        return (
+          <View
+            style={
+              isEven
+                ? { borderRightColor: "#000", borderRightWidth: 1 }
+                : { borderLeftColor: "#000", borderLeftWidth: 1 }
+            }
+          >
+            <AlbumThumbnail
+              size={windowDimensions.width / NUM_COLUMNS - 2}
+              album={album}
+              onPress={() => {
+                navigation.navigate("Album", { album });
+              }}
+            />
+          </View>
+        );
+      }}
       keyExtractor={(album) => `${album.id}`}
       contentContainerStyle={{
         paddingBottom: insets.bottom,
       }}
+      ItemSeparatorComponent={VerticalSeparator}
     />
   );
 }
