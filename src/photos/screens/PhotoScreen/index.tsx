@@ -39,7 +39,7 @@ export function PhotoScreen({ route }: PhotoScreenProps) {
       data={photos}
       keyExtractor={(photo) => `${photo.id}`}
       renderItem={({ item: photo }) => (
-        <PhotoItem key={photo.id} photo={photo} width={windowWidth} />
+        <PhotoItem photo={photo} width={windowWidth} />
       )}
       getItemLayout={(_, index) => ({
         length: windowWidth,
