@@ -1,20 +1,3 @@
-# Experiments on this project
-
-## Sorted List (WIP)
-Drag<strike>&drop</strike> items on a list while you keep the posibility of scroll over the elements.
-
-## Draggable Stickies 
-Sticky notes you can drag&drop and also resize. 
-
-## Twitter Header
-Pseudo-sticky header. It disappears when you scroll down and appears again as soon as you scroll up. 
-
-## Animated Wave
-Just an animated SVG.
-
-## Magnet
-A box that sticks to the borders if is leave too close to them.
-
 # Debug
 
 ## Requirements
@@ -40,3 +23,24 @@ yarn start
 ```
 `expo-cli` will be executed for you and the app is ready to be executed on the platform of your choise by pressing `i` (iOS) or `a` (android)
 
+# Experiments on this project
+
+All experiments are focused on animations and gestures.
+
+## Sorted List (WIP)
+Drag<strike>&drop</strike> items on a list while you keep the posibility of scroll over the elements.
+
+## Draggable Stickies 
+Sticky notes you can drag&drop and also resize. 
+
+## Twitter Header
+Pseudo-sticky header. It disappears when you scroll down and appears again as soon as you scroll up. 
+
+## Animated Wave
+Just an animated SVG.
+
+## Magnet
+A box that sticks to the borders if is leave too close to them.
+
+## Photo Albums
+A photos app with nice transitions between screens using [react-navigation](https://reactnavigation.org/) and [react-navigation-shared-element](https://github.com/IjzerenHein/react-navigation-shared-element)
