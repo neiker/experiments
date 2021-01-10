@@ -1,3 +1,8 @@
+import {
+  HeaderStyleInterpolators,
+  TransitionSpecs,
+} from "@react-navigation/stack";
+import { TransitionPreset } from "@react-navigation/stack/lib/typescript/src/types";
 import React from "react";
 import { Icon } from "react-native-elements";
 import { createSharedElementStackNavigator } from "react-navigation-shared-element";
@@ -9,6 +14,22 @@ import { PhotoScreen } from "./screens/PhotoScreen";
 import { AlbumWithPhotos, PhotosStackProps } from "./types";
 
 const Stack = createSharedElementStackNavigator<PhotosStackProps>();
+
+// Use the same transition preset for all platforms
+const fadeTransitionPreset: TransitionPreset = {
+  gestureDirection: "horizontal",
+  transitionSpec: {
+    open: TransitionSpecs.TransitionIOSSpec,
+    close: TransitionSpecs.TransitionIOSSpec,
+  },
+  // fade screen on show/hide
+  cardStyleInterpolator: ({ current }) => ({
+    cardStyle: {
+      opacity: current.progress,
+    },
+  }),
+  headerStyleInterpolator: HeaderStyleInterpolators.forFade,
+};
 
 const queryClient = new QueryClient();
 
@@ -22,8 +43,8 @@ export function PhotosNavigator() {
   return (
     <QueryClientProvider client={queryClient}>
       <Stack.Navigator
-        mode="modal"
         screenOptions={{
+          ...fadeTransitionPreset,
           headerBackTitleVisible: false,
           headerBackImage: StackHeaderBackIcon,
           headerStyle: {
