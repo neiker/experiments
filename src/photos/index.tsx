@@ -8,6 +8,7 @@ import { Icon } from "react-native-elements";
 import { createSharedElementStackNavigator } from "react-navigation-shared-element";
 import { QueryClient, QueryClientProvider } from "react-query";
 
+import { palette } from "./palette";
 import { AlbumScreen } from "./screens/AlbumScreen";
 import { AlbumsScreen } from "./screens/AlbumsScreen";
 import { PhotoScreen } from "./screens/PhotoScreen";
@@ -35,7 +36,12 @@ const queryClient = new QueryClient();
 
 function StackHeaderBackIcon() {
   return (
-    <Icon name="arrow-back" color="#eee" size={26} style={{ marginLeft: 5 }} />
+    <Icon
+      name="arrow-back"
+      color={palette.white}
+      size={26}
+      style={{ marginLeft: 5 }}
+    />
   );
 }
 
@@ -48,7 +54,7 @@ export function PhotosNavigator() {
           headerBackTitleVisible: false,
           headerBackImage: StackHeaderBackIcon,
           headerStyle: {
-            backgroundColor: "black",
+            backgroundColor: palette.black,
             // remove shadow on Android
             elevation: 0,
             // remove shadow on iOS
@@ -56,10 +62,10 @@ export function PhotosNavigator() {
             borderBottomWidth: 0,
           },
           headerTitleStyle: {
-            color: "white",
+            color: palette.white,
           },
           cardStyle: {
-            backgroundColor: "black",
+            backgroundColor: palette.black,
           },
         }}
       >

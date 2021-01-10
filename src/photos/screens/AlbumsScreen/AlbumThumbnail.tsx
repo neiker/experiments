@@ -5,9 +5,7 @@ import { Image } from "react-native-expo-image-cache";
 import { SharedElement } from "react-navigation-shared-element";
 
 import { AlbumWithPhotos } from "../../types";
-
-const WHITE = "#fafafa";
-const BLACK = "#040404";
+import { colorWithOpacity, palette } from "../../palette";
 
 interface AlbumThumbnailProps {
   size: number;
@@ -48,14 +46,14 @@ export function AlbumThumbnail({ size, album, onPress }: AlbumThumbnailProps) {
             style={{
               width: smallThumbSize,
               height: smallThumbSize,
-              backgroundColor: BLACK,
+              backgroundColor: palette.black,
               justifyContent: "center",
               alignItems: "center",
             }}
           >
             <Text
               style={{
-                color: WHITE,
+                color: palette.white,
                 fontWeight: "500",
                 fontSize: 15,
               }}
@@ -72,12 +70,12 @@ export function AlbumThumbnail({ size, album, onPress }: AlbumThumbnailProps) {
             top: 0,
             right: 0,
             padding: 10,
-            backgroundColor: BLACK + "77", // Black with opacity
+            backgroundColor: colorWithOpacity(palette.black, 0.5),
           }}
         >
           <Text
             style={{
-              color: WHITE,
+              color: palette.white,
               fontWeight: "500",
             }}
             numberOfLines={1}

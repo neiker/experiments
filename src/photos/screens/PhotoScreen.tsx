@@ -6,6 +6,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SharedElement } from "react-navigation-shared-element";
 
+import { colorWithOpacity, palette } from "../palette";
 import { PhotosStackProps } from "../types";
 
 interface PhotoScreenProps {
@@ -59,10 +60,10 @@ export function PhotoScreen({ route }: PhotoScreenProps) {
           <View
             style={{
               paddingBottom: insets.bottom,
-              backgroundColor: "#111",
+              backgroundColor: colorWithOpacity(palette.white, 0.15),
             }}
           >
-            <Text style={{ color: "#ddd", fontSize: 12, margin: 20 }}>
+            <Text style={{ color: palette.white, fontSize: 12, margin: 20 }}>
               {photo.title}
             </Text>
           </View>

@@ -7,6 +7,7 @@ import { useQuery } from "react-query";
 
 import { PhotosStackProps } from "../../types";
 import { getAlbumsWithPhotos } from "../../api";
+import { palette } from "../../palette";
 
 import { AlbumThumbnail } from "./AlbumThumbnail";
 
@@ -17,7 +18,7 @@ function VerticalSeparator() {
     <View
       style={{
         height: 2,
-        backgroundColor: "#000",
+        backgroundColor: palette.black,
       }}
     />
   );
@@ -44,10 +45,10 @@ export function AlbumsScreen({ navigation }: AlbumsScreenProps) {
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "black",
+          backgroundColor: palette.black,
         }}
       >
-        <ActivityIndicator color="white" size="large" />
+        <ActivityIndicator color={palette.white} size="large" />
       </View>
     );
   }
@@ -63,8 +64,8 @@ export function AlbumsScreen({ navigation }: AlbumsScreenProps) {
           <View
             style={
               isEven
-                ? { borderRightColor: "#000", borderRightWidth: 1 }
-                : { borderLeftColor: "#000", borderLeftWidth: 1 }
+                ? { borderRightColor: palette.black, borderRightWidth: 1 }
+                : { borderLeftColor: palette.black, borderLeftWidth: 1 }
             }
           >
             <AlbumThumbnail
