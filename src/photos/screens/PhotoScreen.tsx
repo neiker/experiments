@@ -1,4 +1,4 @@
-import { NavigationProp, RouteProp } from "@react-navigation/native";
+import { RouteProp } from "@react-navigation/native";
 import React from "react";
 import { useWindowDimensions, View, Text } from "react-native";
 import { Image } from "react-native-expo-image-cache";
@@ -10,10 +10,9 @@ import { PhotosStackProps } from "../types";
 
 interface PhotoScreenProps {
   route: RouteProp<PhotosStackProps, "Photo">;
-  navigation: NavigationProp<PhotosStackProps, "Photo">;
 }
 
-export function PhotoScreen({ route, navigation }: PhotoScreenProps) {
+export function PhotoScreen({ route }: PhotoScreenProps) {
   const { photos, photoId } = route.params;
   const { width: windowWidth } = useWindowDimensions();
   const insets = useSafeAreaInsets();
@@ -45,12 +44,6 @@ export function PhotoScreen({ route, navigation }: PhotoScreenProps) {
       snapToInterval={windowWidth}
       decelerationRate={0}
       ref={scrollViewRef}
-      onMomentumScrollEnd={({ nativeEvent }) => {
-        const index = nativeEvent.contentOffset.x / windowWidth;
-        const photo = photos[index];
-
-        navigation.setParams({ photoId: photo.id });
-      }}
     >
       {photos.map((photo) => (
         <View
