@@ -1,4 +1,4 @@
-import { RouteProp } from "@react-navigation/native";
+import { NavigationProp, RouteProp } from "@react-navigation/native";
 import React from "react";
 import { useWindowDimensions } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
@@ -9,9 +9,10 @@ import { PhotoItem } from "./PhotoItem";
 
 interface PhotoScreenProps {
   route: RouteProp<PhotosStackProps, "Photo">;
+  navigation: NavigationProp<PhotosStackProps, "Photo">;
 }
 
-export function PhotoScreen({ route }: PhotoScreenProps) {
+export function PhotoScreen({ route, navigation }: PhotoScreenProps) {
   const { photos, photoId } = route.params;
   const { width: windowWidth } = useWindowDimensions();
 
@@ -39,6 +40,16 @@ export function PhotoScreen({ route }: PhotoScreenProps) {
         offset: windowWidth * index,
         index,
       })}
+      onMomentumScrollEnd={({ nativeEvent }) => {
+        const currentIndex = Math.round(
+          nativeEvent.contentOffset.x / windowWidth
+        );
+        const photo = photos[currentIndex];
+
+        if (photo) {
+          navigation.setParams({ photoId: photo.id });
+        }
+      }}
     />
   );
 }

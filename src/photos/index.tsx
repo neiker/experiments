@@ -89,8 +89,16 @@ export function PhotosNavigator() {
         <Stack.Screen
           name="Photo"
           component={PhotoScreen}
-          options={{
-            title: "",
+          options={({ route }) => {
+            const { photos, photoId } = route.params;
+
+            const photo = photos.find(({ id }) => id === photoId);
+
+            return {
+              title: photo
+                ? `${photos.indexOf(photo) + 1}/${photos.length}`
+                : "",
+            };
           }}
           sharedElementsConfig={(route, prevRoute, showing) => {
             // In order to perform the correct transition after scroll to a different photo
