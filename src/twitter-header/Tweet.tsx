@@ -1,6 +1,13 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 import { Avatar, Icon, ListItem } from "react-native-elements";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import Reanimated, {
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 import { colors } from "./colors";
 
@@ -27,6 +34,90 @@ function FooterIcon({ iconName, count }: { iconName: string; count?: number }) {
           {count}
         </Text>
       )}
+    </View>
+  );
+}
+
+function LikeButton({ count }: { count: number }) {
+  const [checked, isChecked] = React.useState(false);
+
+  const state = useSharedValue(0);
+
+  React.useEffect(() => {
+    if (checked) {
+      state.value = withTiming(1, {
+        duration: 1000,
+      });
+    } else {
+      state.value = 0;
+    }
+  });
+
+  const activeStyle = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(
+        state.value,
+        [0, 0.1, 1],
+        [0, 0, 1],
+        Reanimated.Extrapolate.CLAMP
+      ),
+    };
+  });
+
+  const inactiveStyle = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(
+        state.value,
+        [0, 0.1, 1],
+        [1, 1, 0],
+        Reanimated.Extrapolate.CLAMP
+      ),
+      transform: [
+        {
+          scale: interpolate(
+            state.value,
+            [0, 0.1],
+            [1, 0],
+            Reanimated.Extrapolate.CLAMP
+          ),
+        },
+      ],
+    };
+  });
+  return (
+    <View style={{ flex: 1 }}>
+      <TouchableWithoutFeedback
+        style={{ flexDirection: "row", alignItems: "center", flex: 1 }}
+        onPress={() => {
+          isChecked((v) => !v);
+        }}
+      >
+        <View style={{ width: 16, height: 16 }}>
+          <Reanimated.View style={[StyleSheet.absoluteFillObject, activeStyle]}>
+            <Icon
+              name="heart"
+              type="material-community"
+              size={16}
+              color="red"
+            />
+          </Reanimated.View>
+          <Reanimated.View
+            style={[StyleSheet.absoluteFillObject, inactiveStyle]}
+          >
+            <Icon
+              name="heart-outline"
+              type="material-community"
+              size={16}
+              color="red"
+            />
+          </Reanimated.View>
+        </View>
+        {count !== undefined && (
+          <Text style={{ marginLeft: 5, color: "#333", fontSize: 12 }}>
+            {count}
+          </Text>
+        )}
+      </TouchableWithoutFeedback>
     </View>
   );
 }
@@ -77,7 +168,8 @@ export function Tweet({ item }: { item: TweetData }) {
         >
           <FooterIcon iconName="comment-outline" count={item.comments} />
           <FooterIcon iconName="twitter-retweet" count={item.retweets} />
-          <FooterIcon iconName="heart-outline" count={item.likes} />
+
+          <LikeButton count={item.likes} />
           <FooterIcon iconName="share-outline" />
         </View>
       </ListItem.Content>
