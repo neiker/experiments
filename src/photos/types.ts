@@ -1,5 +1,4 @@
 export interface Photo {
-  albumId: number;
   id: number;
   title: string;
   url: string;
@@ -7,19 +6,15 @@ export interface Photo {
 }
 
 export interface Album {
-  userId: number;
   id: number;
   title: string;
-}
-
-export interface AlbumWithPhotos extends Album {
   photos: Photo[];
 }
 
 export type PhotosStackProps = {
   Albums: undefined;
   Album: {
-    album: AlbumWithPhotos;
+    album: Album;
   };
   Photo: {
     photos: Photo[];

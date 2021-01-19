@@ -1,10 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import faker from "faker";
 
-import { Album, AlbumWithPhotos, Photo } from "./types";
-
 // This will cache the result of `fn` forever. Implement a expire mechanism if needed.
-async function asyncMemo<T>(key: string, fn: () => Promise<T>) {
+async function asyncMemo<T>(key: string, fn: () => Promise<T>): Promise<T> {
   const DEBUG = false;
 
   const cachedValue = await AsyncStorage.getItem(key);
@@ -20,57 +18,29 @@ async function asyncMemo<T>(key: string, fn: () => Promise<T>) {
   return result;
 }
 
-export async function get<T>(url: string): Promise<T> {
-  const res = await fetch(url);
-
-  if (res.ok) {
-    return res.json();
-  }
-
-  throw new Error();
-}
-
-export async function getAlbumsWithPhotos(): Promise<AlbumWithPhotos[]> {
+export async function getAlbumsWithPhotos() {
   const CACHE_KEY = "cache:getAlbumsWithPhotos";
 
   return asyncMemo(CACHE_KEY, async () => {
-    const albums = await get<Album[]>(
-      "https://jsonplaceholder.typicode.com/albums"
-    );
-    const photos = await get<Photo[]>(
-      "https://jsonplaceholder.typicode.com/photos"
-    );
+    // The logic for transitions is easier with unique IDs for photos
+    let photoId = 0;
 
-    // react-native-expo-image-cache have issues with
-    // too many images so we only use 10 albums
-    return albums.slice(0, 10).map((album) => {
-      let albumPhotos = photos.filter((photo) => photo.albumId === album.id);
-
-      // All albums from jsonplaceholder have 50 images. Let's randomize it!
-      albumPhotos.length = faker.random.number({
-        min: 10,
-        max: albumPhotos.length,
-      });
-
-      // Images from jsonplaceholder are squares with solid a solid color
-      // So we use real photos:
-      albumPhotos = albumPhotos.map((photo) => {
+    return [...Array(10)].map((_, albumId) => ({
+      id: albumId,
+      title: faker.lorem.sentence(faker.random.number({ min: 1, max: 5 })),
+      photos: [...Array(faker.random.number({ min: 10, max: 40 }))].map(() => {
         // Use a 150x150 image to improve loading time
         // In a real scenario we will have 2 different sizes of the
         // same image but this is not posible with faker.js
         const url = faker.image.imageUrl(150, 150, undefined, true, true);
 
         return {
-          ...photo,
-          url: url,
+          id: photoId++,
+          title: faker.lorem.sentence(faker.random.number({ min: 1, max: 5 })),
+          url,
           thumbnailUrl: url,
         };
-      });
-
-      return {
-        ...album,
-        photos: albumPhotos,
-      };
-    });
+      }),
+    }));
   });
 }

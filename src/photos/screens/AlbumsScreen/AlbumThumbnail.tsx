@@ -4,12 +4,12 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { Image } from "react-native-expo-image-cache";
 import { SharedElement } from "react-navigation-shared-element";
 
-import { AlbumWithPhotos } from "../../types";
+import { Album } from "../../types";
 import { colorWithOpacity, palette } from "../../palette";
 
 interface AlbumThumbnailProps {
   size: number;
-  album: AlbumWithPhotos;
+  album: Album;
   onPress: () => void;
 }
 

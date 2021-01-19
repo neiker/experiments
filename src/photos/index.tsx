@@ -12,7 +12,7 @@ import { palette } from "./palette";
 import { AlbumScreen } from "./screens/AlbumScreen";
 import { AlbumsScreen } from "./screens/AlbumsScreen";
 import { PhotoScreen } from "./screens/PhotoScreen";
-import { AlbumWithPhotos, PhotosStackProps } from "./types";
+import { Album, PhotosStackProps } from "./types";
 
 const Stack = createSharedElementStackNavigator<PhotosStackProps>();
 
@@ -78,7 +78,7 @@ export function PhotosNavigator() {
           })}
           sharedElementsConfig={(route, prevRoute) => {
             if (prevRoute.name === "Albums") {
-              const album = route.params.album as AlbumWithPhotos;
+              const album = route.params.album as Album;
 
               return album.photos
                 .slice(0, 4)
