@@ -13,6 +13,7 @@
     "expo": "^40.0.0",
     "expo-blur": "^8.2.2",
     "faker": "^5.1.0",
+    "lottie-react-native": "~2.6.1",
     "random-color": "1.0.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",

@@ -1,13 +1,8 @@
 import React from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View } from "react-native";
 import { Avatar, Icon, ListItem } from "react-native-elements";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
-import Reanimated, {
-  interpolate,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
+import LottieView from "lottie-react-native";
 
 import { colors } from "./colors";
 
@@ -39,51 +34,21 @@ function FooterIcon({ iconName, count }: { iconName: string; count?: number }) {
 }
 
 function LikeButton({ count }: { count: number }) {
-  const [checked, isChecked] = React.useState(false);
-
-  const state = useSharedValue(0);
+  const [checked, isChecked] = React.useState<boolean | undefined>(undefined);
+  const ref = React.useRef<LottieView>(null);
 
   React.useEffect(() => {
-    if (checked) {
-      state.value = withTiming(1, {
-        duration: 1000,
-      });
-    } else {
-      state.value = 0;
+    if (checked !== undefined) {
+      if (checked) {
+        ref.current?.reset();
+        ref.current?.play(0, 45);
+      } else {
+        ref.current?.reset();
+        ref.current?.play(45, 90);
+      }
     }
-  });
+  }, [checked]);
 
-  const activeStyle = useAnimatedStyle(() => {
-    return {
-      opacity: interpolate(
-        state.value,
-        [0, 0.1, 1],
-        [0, 0, 1],
-        Reanimated.Extrapolate.CLAMP
-      ),
-    };
-  });
-
-  const inactiveStyle = useAnimatedStyle(() => {
-    return {
-      opacity: interpolate(
-        state.value,
-        [0, 0.1, 1],
-        [1, 1, 0],
-        Reanimated.Extrapolate.CLAMP
-      ),
-      transform: [
-        {
-          scale: interpolate(
-            state.value,
-            [0, 0.1],
-            [1, 0],
-            Reanimated.Extrapolate.CLAMP
-          ),
-        },
-      ],
-    };
-  });
   return (
     <View style={{ flex: 1 }}>
       <TouchableWithoutFeedback
@@ -91,26 +56,25 @@ function LikeButton({ count }: { count: number }) {
         onPress={() => {
           isChecked((v) => !v);
         }}
+        hitSlop={{
+          top: 8,
+          left: 8,
+          right: 8,
+          bottom: 8,
+        }}
       >
         <View style={{ width: 16, height: 16 }}>
-          <Reanimated.View style={[StyleSheet.absoluteFillObject, activeStyle]}>
-            <Icon
-              name="heart"
-              type="material-community"
-              size={16}
-              color="red"
-            />
-          </Reanimated.View>
-          <Reanimated.View
-            style={[StyleSheet.absoluteFillObject, inactiveStyle]}
-          >
-            <Icon
-              name="heart-outline"
-              type="material-community"
-              size={16}
-              color="red"
-            />
-          </Reanimated.View>
+          <LottieView
+            ref={ref}
+            style={{
+              marginTop: -5,
+              marginLeft: -6,
+              width: 42,
+              height: 42,
+            }}
+            source={require("./like-lottie.json")}
+            loop={false}
+          />
         </View>
         {count !== undefined && (
           <Text style={{ marginLeft: 5, color: "#333", fontSize: 12 }}>
