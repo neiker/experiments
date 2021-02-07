@@ -1,10 +1,10 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Animated, Easing, Text, View } from "react-native";
 import { Avatar, Icon, ListItem } from "react-native-elements";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import LottieView from "lottie-react-native";
 
-import { colors } from "./colors";
+import { colors } from "../colors";
 
 export interface TweetData {
   id: number;
@@ -35,17 +35,24 @@ function FooterIcon({ iconName, count }: { iconName: string; count?: number }) {
 
 function LikeButton({ count }: { count: number }) {
   const [checked, isChecked] = React.useState<boolean | undefined>(undefined);
-  const ref = React.useRef<LottieView>(null);
+  const progress = React.useRef(new Animated.Value(0));
 
   React.useEffect(() => {
     if (checked !== undefined) {
-      if (checked) {
-        ref.current?.reset();
-        ref.current?.play(0, 45);
-      } else {
-        ref.current?.reset();
-        ref.current?.play(45, 90);
-      }
+      const timing = Animated.timing(progress.current, {
+        toValue: checked ? 0.5 : 1,
+        duration: checked ? 2000 : 1000,
+        useNativeDriver: true,
+        easing: Easing.linear,
+      });
+
+      timing.start(({ finished }) => {
+        if (finished && !checked) {
+          progress.current.setValue(0);
+        }
+      });
+
+      return timing.stop;
     }
   }, [checked]);
 
@@ -65,7 +72,7 @@ function LikeButton({ count }: { count: number }) {
       >
         <View style={{ width: 16, height: 16 }}>
           <LottieView
-            ref={ref}
+            progress={progress.current}
             style={{
               marginTop: -5,
               marginLeft: -6,
@@ -73,7 +80,6 @@ function LikeButton({ count }: { count: number }) {
               height: 42,
             }}
             source={require("./like-lottie.json")}
-            loop={false}
           />
         </View>
         {count !== undefined && (

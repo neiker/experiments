@@ -33,7 +33,7 @@ const TWEETS: TweetData[] = [...Array(40)].map((_, id) => ({
   likes: faker.random.number(300),
 }));
 
-export const TwitterHeaderScreen = () => {
+export const TwitterScreen = () => {
   const insets = useSafeAreaInsets();
 
   const listRef = React.useRef<NativeViewGestureHandler>(null);

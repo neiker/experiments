@@ -10,7 +10,7 @@ import { FlatList } from "react-native-gesture-handler";
 
 import { List } from "./src/list";
 import { Canvas } from "./src/canvas";
-import { TwitterHeaderScreen } from "./src/twitter-header";
+import { TwitterScreen } from "./src/twitter";
 import { AnimatedWaveScreen } from "./src/animated-wave";
 import { MagnetScreen } from "./src/MagnetScreen";
 import { PhotosNavigator } from "./src/photos";
@@ -34,9 +34,9 @@ const screens: Screen[] = [
     title: "Draggable stickies",
   },
   {
-    name: "TwitterHeader ",
-    component: TwitterHeaderScreen,
-    title: "Twitter Header",
+    name: "Twitter",
+    component: TwitterScreen,
+    title: "Twitter",
     screenOptions: {
       headerShown: false,
     },
