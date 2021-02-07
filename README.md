@@ -33,8 +33,10 @@ Drag<strike>&drop</strike> items on a list while you keep the posibility of scro
 ## Draggable Stickies 
 Sticky notes you can drag&drop and also resize. 
 
-## Twitter Header
-Pseudo-sticky header. It disappears when you scroll down and appears again as soon as you scroll up. 
+## Twitter 
+ - Pseudo-sticky header. It disappears when you scroll down and appears again as soon as you scroll up. 
+ - Micro-interaction on "like" icon using Lottie.
+
 
 ## Animated Wave
 Just an animated SVG.

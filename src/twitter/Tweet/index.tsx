@@ -1,8 +1,10 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Animated, Easing, Text, View } from "react-native";
 import { Avatar, Icon, ListItem } from "react-native-elements";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import LottieView from "lottie-react-native";
 
-import { colors } from "./colors";
+import { colors } from "../colors";
 
 export interface TweetData {
   id: number;
@@ -27,6 +29,65 @@ function FooterIcon({ iconName, count }: { iconName: string; count?: number }) {
           {count}
         </Text>
       )}
+    </View>
+  );
+}
+
+function LikeButton({ count }: { count: number }) {
+  const [checked, isChecked] = React.useState<boolean | undefined>(undefined);
+  const progress = React.useRef(new Animated.Value(0));
+
+  React.useEffect(() => {
+    if (checked !== undefined) {
+      const timing = Animated.timing(progress.current, {
+        toValue: checked ? 0.5 : 1,
+        duration: checked ? 2000 : 1000,
+        useNativeDriver: true,
+        easing: Easing.linear,
+      });
+
+      timing.start(({ finished }) => {
+        if (finished && !checked) {
+          progress.current.setValue(0);
+        }
+      });
+
+      return timing.stop;
+    }
+  }, [checked]);
+
+  return (
+    <View style={{ flex: 1 }}>
+      <TouchableWithoutFeedback
+        style={{ flexDirection: "row", alignItems: "center", flex: 1 }}
+        onPress={() => {
+          isChecked((v) => !v);
+        }}
+        hitSlop={{
+          top: 8,
+          left: 8,
+          right: 8,
+          bottom: 8,
+        }}
+      >
+        <View style={{ width: 16, height: 16 }}>
+          <LottieView
+            progress={progress.current}
+            style={{
+              marginTop: -5,
+              marginLeft: -6,
+              width: 42,
+              height: 42,
+            }}
+            source={require("./like-lottie.json")}
+          />
+        </View>
+        {count !== undefined && (
+          <Text style={{ marginLeft: 5, color: "#333", fontSize: 12 }}>
+            {count}
+          </Text>
+        )}
+      </TouchableWithoutFeedback>
     </View>
   );
 }
@@ -77,7 +138,8 @@ export function Tweet({ item }: { item: TweetData }) {
         >
           <FooterIcon iconName="comment-outline" count={item.comments} />
           <FooterIcon iconName="twitter-retweet" count={item.retweets} />
-          <FooterIcon iconName="heart-outline" count={item.likes} />
+
+          <LikeButton count={item.likes} />
           <FooterIcon iconName="share-outline" />
         </View>
       </ListItem.Content>
