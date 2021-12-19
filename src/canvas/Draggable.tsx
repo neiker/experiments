@@ -57,11 +57,11 @@ export const Draggable: React.FC<{
         screenAvailableSize.height - size.y.value
       );
     },
-
     onEnd: () => {
-      isActive.value = false;
-
       runOnJS(onDragEnd)({ x: position.x.value, y: position.y.value });
+    },
+    onFinish: () => {
+      isActive.value = false;
     },
   });
 

@@ -27,20 +27,24 @@ export async function getAlbumsWithPhotos() {
 
     return [...Array(10)].map((_, albumId) => ({
       id: albumId,
-      title: faker.lorem.sentence(faker.random.number({ min: 1, max: 5 })),
-      photos: [...Array(faker.random.number({ min: 10, max: 40 }))].map(() => {
-        // Use a 150x150 image to improve loading time
-        // In a real scenario we will have 2 different sizes of the
-        // same image but this is not posible with faker.js
-        const url = faker.image.imageUrl(150, 150, undefined, true, true);
+      title: faker.lorem.sentence(faker.datatype.number({ min: 1, max: 5 })),
+      photos: [...Array(faker.datatype.number({ min: 10, max: 40 }))].map(
+        () => {
+          // Use a 150x150 image to improve loading time
+          // In a real scenario we will have 2 different sizes of the
+          // same image but this is not posible with faker.js
+          const url = faker.image.imageUrl(150, 150, undefined, true, true);
 
-        return {
-          id: photoId++,
-          title: faker.lorem.sentence(faker.random.number({ min: 1, max: 5 })),
-          url,
-          thumbnailUrl: url,
-        };
-      }),
+          return {
+            id: photoId++,
+            title: faker.lorem.sentence(
+              faker.datatype.number({ min: 1, max: 5 })
+            ),
+            url,
+            thumbnailUrl: url,
+          };
+        }
+      ),
     }));
   });
 }

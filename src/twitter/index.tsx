@@ -27,10 +27,10 @@ const TWEETS: TweetData[] = [...Array(40)].map((_, id) => ({
     username: faker.internet.userName(),
     avatarUrl: faker.image.imageUrl(50, 50, "people", true, true),
   },
-  content: faker.lorem.sentence(faker.random.number(30)),
-  comments: faker.random.number(10),
-  retweets: faker.random.number(50),
-  likes: faker.random.number(300),
+  content: faker.lorem.sentence(faker.datatype.number(30)),
+  comments: faker.datatype.number(10),
+  retweets: faker.datatype.number(50),
+  likes: faker.datatype.number(300),
 }));
 
 export const TwitterScreen = () => {

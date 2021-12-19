@@ -38,21 +38,19 @@ function LikeButton({ count }: { count: number }) {
   const progress = React.useRef(new Animated.Value(0));
 
   React.useEffect(() => {
-    if (checked !== undefined) {
+    if (checked === true) {
       const timing = Animated.timing(progress.current, {
-        toValue: checked ? 0.5 : 1,
-        duration: checked ? 2000 : 1000,
+        toValue: 1,
+        duration: 1500,
         useNativeDriver: true,
         easing: Easing.linear,
       });
 
-      timing.start(({ finished }) => {
-        if (finished && !checked) {
-          progress.current.setValue(0);
-        }
-      });
+      timing.start();
 
       return timing.stop;
+    } else {
+      progress.current.setValue(0);
     }
   }, [checked]);
 
@@ -64,20 +62,20 @@ function LikeButton({ count }: { count: number }) {
           isChecked((v) => !v);
         }}
         hitSlop={{
-          top: 8,
-          left: 8,
-          right: 8,
-          bottom: 8,
+          top: 12,
+          left: 12,
+          right: 12,
+          bottom: 12,
         }}
       >
         <View style={{ width: 16, height: 16 }}>
           <LottieView
             progress={progress.current}
             style={{
-              marginTop: -5,
+              marginTop: -5.5,
               marginLeft: -6,
-              width: 42,
-              height: 42,
+              width: 48,
+              height: 48,
             }}
             source={require("./like-lottie.json")}
           />
@@ -137,9 +135,11 @@ export function Tweet({ item }: { item: TweetData }) {
           }}
         >
           <FooterIcon iconName="comment-outline" count={item.comments} />
+
           <FooterIcon iconName="twitter-retweet" count={item.retweets} />
 
           <LikeButton count={item.likes} />
+
           <FooterIcon iconName="share-outline" />
         </View>
       </ListItem.Content>

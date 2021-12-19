@@ -30,6 +30,10 @@ export const WidgetComponent: React.FC<{
   const size = redash.useVector(widget.width, widget.height);
   const selected = useSharedValue<boolean>(widget.selected === true);
 
+  if (widget.selected !== undefined) {
+    selected.value = widget.selected;
+  }
+
   const onDragEnd = ({ x, y }: { x: number; y: number }) => {
     onUpdate({
       ...widget,

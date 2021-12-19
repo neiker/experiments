@@ -8,7 +8,7 @@ import {
 import { ListItem } from "react-native-elements";
 import { FlatList } from "react-native-gesture-handler";
 
-import { List } from "./src/list";
+// import { List } from "./src/list";
 import { Canvas } from "./src/canvas";
 import { TwitterScreen } from "./src/twitter";
 import { AnimatedWaveScreen } from "./src/animated-wave";
@@ -27,7 +27,7 @@ type Screen = {
 };
 
 const screens: Screen[] = [
-  { name: "List ", component: List, title: "Sorted list" },
+  // { name: "List ", component: List, title: "Sorted list" },
   {
     name: "Canvas ",
     component: Canvas,
